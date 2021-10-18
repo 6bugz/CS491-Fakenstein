@@ -25,6 +25,13 @@ section, summary, time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;}
 
+div.cansu {
+   width:300; /*width of your image*/
+   background-image:url("images/cansu.jfif");
+   margin:0; /* If you want no margin */
+   padding:0; /*if your want to padding */
+}
+
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;}
