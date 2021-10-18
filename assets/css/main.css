@@ -1664,9 +1664,13 @@ input, select, textarea {
 
 /* Mouse Hover */
     .vividworknav {
+      display: block;
       width: 700px;
       height: 700px;
-      margin: 25px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top = 10px;
+      margin-bottom = 10px;
       float: left;
       padding: 0;
       position: relative;
