@@ -26,10 +26,11 @@ section, summary, time, mark, audio, video {
 	vertical-align: baseline;}
 
 div.cansu {
-   width:300; /*width of your image*/
-   background-image:url("images/cansu.jfif");
-   margin:0; /* If you want no margin */
-   padding:0; /*if your want to padding */
+	width:100%; /*width of your image*/
+	background-image:url("/images/cansu.jfif");
+	margin:0; /* If you want no margin */
+	padding:0; /*if your want to padding */
+	background-color:red;
 }
 
 article, aside, details, figcaption, figure,
