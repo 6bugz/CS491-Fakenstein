@@ -25,13 +25,6 @@ section, summary, time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;}
 
-div.cansu {
-	width:100%; /*width of your image*/
-	background-image:url("/images/cansu.jfif");
-	margin:0; /* If you want no margin */
-	padding:0; /*if your want to padding */
-	background-color:red;
-}
 
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
@@ -1667,3 +1660,53 @@ input, select, textarea {
 		body.is-preload #footer {
 			opacity: 0;
 		}
+
+
+/* Mouse Hover */
+    .vividworknav {
+      width: 600px;
+      height: 600px;
+      margin: 50px;
+      float: left;
+      padding: 0;
+      position: relative;
+      background-color:#FF1493;
+    }
+
+    .vividworknav:hover img {
+      opacity: 0.3;
+    }
+
+    .vividworknav:hover .work-text-content {
+      opacity: 1;
+    }
+
+    .vividworknav img {
+      padding: 0;
+      width: 600px;
+      height: 600px;
+      object-fit:cover;
+      display: block;
+      opacity: 1;
+    }
+
+    .vividworknav img,
+    .work-text-content {
+      -webkit-transition: opacity 0.5s ease-out;
+      -moz-transition: opacity 0.5s ease-out;
+      -o-transition: opacity 0.5s ease-out;
+      transition: opacity 0.5s ease-out;
+    }
+
+    .work-text-content {
+      position: absolute;
+      color: white;
+      left: 0;
+      top: 40%;
+      right: 0;
+      bottom: 0;
+      font-size: 64px;
+      font-weight: bold;
+      text-align: center;
+      opacity: 0;
+    }
