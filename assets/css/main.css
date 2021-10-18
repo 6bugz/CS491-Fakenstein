@@ -1664,9 +1664,9 @@ input, select, textarea {
 
 /* Mouse Hover */
     .vividworknav {
-      width: 700px;
-      height: 700px;
-      margin: 25px;
+      width: 80%;
+      height: 80%;
+      margin: 10%;
       float: left;
       padding: 0;
       position: relative;
@@ -1687,8 +1687,8 @@ input, select, textarea {
 
     .vividworknav img {
       padding: 0;
-      width: 700px;
-      height: 700px;
+      width: 100%;
+      height: 100%;
       object-fit:cover;
       display: block;
       opacity: 1;
@@ -1710,7 +1710,7 @@ input, select, textarea {
       top: 40%;
       right: 0;
       bottom: 0;
-      font-size: 60px;
+      font-size: 250%;
       font-weight: bold;
       text-align: center;
       opacity: 0;
@@ -1723,7 +1723,7 @@ input, select, textarea {
           top: 60%;
           right: 0;
           bottom: 0;
-          font-size: 24px;
+          font-size: 150%;
           font-weight: bold;
           text-align: center;
           opacity: 0;
