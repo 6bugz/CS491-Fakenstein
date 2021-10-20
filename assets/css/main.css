@@ -1707,10 +1707,11 @@ input, select, textarea {
       position: absolute;
       color: white;
       left: 0;
+      margin: 10%;
       top: 40%;
       right: 0;
       bottom: 0;
-      font-size: 200%;
+      font-size: 250%;
       font-weight: bold;
       text-align: center;
       opacity: 0;
@@ -1721,6 +1722,7 @@ input, select, textarea {
           color: white;
           left: 0;
           top: 60%;
+          margin: 10%;
           right: 0;
           bottom: 0;
           font-size: 150%;
