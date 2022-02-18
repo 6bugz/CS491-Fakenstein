@@ -3,12 +3,12 @@ import { StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
+import Colors from '../constants/Colors';
 
-export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+export default function TabOneScreen({ navigation }: RootTabScreenProps<'Fakenstein'>) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <Text style={styles.title}>Fakenstein</Text>
       <EditScreenInfo path="/screens/TabOneScreen.tsx" />
     </View>
   );
@@ -19,14 +19,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#000000'
   },
   title: {
-    fontSize: 20,
+    fontSize: 40,
     fontWeight: 'bold',
+    color: Colors.original.text,
   },
   separator: {
     marginVertical: 30,
     height: 1,
     width: '80%',
+    backgroundColor: '#178C6C',
   },
 });

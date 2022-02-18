@@ -16,4 +16,11 @@ export default {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
   },
+  original: {
+    text: '#91BCB3',
+      background: '#000',
+      tint: tintColorDark,
+      tabIconDefault: '#ccc',
+      tabIconSelected: tintColorDark,
+  },
 };
