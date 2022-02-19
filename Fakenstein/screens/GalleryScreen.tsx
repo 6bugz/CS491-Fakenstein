@@ -1,4 +1,4 @@
-
+import { RootTabScreenProps } from '../types';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Colors from '../constants/Colors';
@@ -6,7 +6,7 @@ import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function TabTwoScreen() {
+export default function GalleryScreen({ navigation }: RootTabScreenProps<'Fakenstein'>) {
     const [image, setImage] = useState(null);
 
     const pickImage = async () => {
@@ -29,7 +29,7 @@ export default function TabTwoScreen() {
     <View style={styles.container}>
         <TouchableOpacity onPress={pickImage} style={styles.helpLink}>
           <Text style={styles.galleryText}>
-            Go To Gallery
+            Open Gallery
           </Text>
         </TouchableOpacity>
         {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
@@ -40,7 +40,7 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.original.background,
+    backgroundColor: Colors.dark.background,
   },
   title: {
     fontSize: 24,
@@ -57,6 +57,6 @@ const styles = StyleSheet.create({
     galleryText: {
       fontSize: 24,
       textAlign: 'center',
-      color: Colors.original.text,
+      color: Colors.dark.text,
     },
 });

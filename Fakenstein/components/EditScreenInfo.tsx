@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     marginHorizontal: 50,
-    backgroundColor: Colors.original,
+    backgroundColor: Colors.dark.background,
   },
   helpLink: {
     paddingVertical: 8,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   galleryText: {
     fontSize: 24,
     textAlign: 'center',
-    color: Colors.original.text,
+    color: Colors.dark.text,
   },
   infoText: {
       fontSize: 20,

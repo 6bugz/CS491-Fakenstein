@@ -19,17 +19,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000000'
+    backgroundColor: Colors.dark.background,
   },
   title: {
     fontSize: 40,
     fontWeight: 'bold',
-    color: Colors.original.text,
+    color: Colors.dark.text,
   },
   separator: {
     marginVertical: 30,
     height: 1,
     width: '80%',
-    backgroundColor: '#178C6C',
   },
 });

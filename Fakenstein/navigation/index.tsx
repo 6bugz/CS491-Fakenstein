@@ -12,10 +12,10 @@ import { ColorSchemeName, Pressable } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import ModalScreen from '../screens/ModalScreen';
+import TutorialScreen from '../screens/TutorialScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import GalleryScreen from '../screens/GalleryScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -23,7 +23,7 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      theme={DarkTheme}>
       <RootNavigator />
     </NavigationContainer>
   );
@@ -40,9 +40,7 @@ function RootNavigator() {
     <Stack.Navigator>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'tutorial' }}>
-        <Stack.Screen name="Tutorial" component={ModalScreen} />
-      </Stack.Group>
+      <Stack.Screen name="Tutorial" component={TutorialScreen} />
     </Stack.Navigator>
   );
 }
@@ -54,7 +52,7 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
+  const colorScheme = 'dark';
 
   return (
     <BottomTab.Navigator
@@ -66,31 +64,32 @@ function BottomTabNavigator() {
         name="TabOne"
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Fakenstein',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Tutorial')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
+          title: 'Welcome',
+          tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
+
         })}
       />
       <BottomTab.Screen
         name="TabTwo"
-        component={TabTwoScreen}
-        options={{
+        component={GalleryScreen}
+        options={({ navigation }: RootTabScreenProps<'Gallery'>) => ({
           title: 'Gallery',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
+          tabBarIcon: ({ color }) => <TabBarIcon name="photo" color={color} />,
+          headerRight: () => (
+              <Pressable
+                onPress={() => navigation.navigate('Tutorial')}
+                style={({ pressed }) => ({
+                  opacity: pressed ? 0.5 : 1,
+                })}>
+                <FontAwesome
+                  name="info-circle"
+                  size={25}
+                  color={Colors[colorScheme].tabIconDefault}
+                  style={{ marginRight: 15 }}
+                />
+              </Pressable>
+            ),
+        })}
       />
     </BottomTab.Navigator>
   );
