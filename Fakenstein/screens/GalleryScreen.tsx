@@ -1,38 +1,43 @@
 import { RootTabScreenProps } from '../types';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Colors from '../constants/Colors';
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import * as ImagePicker from 'expo-image-picker';
 
-export default function GalleryScreen({ navigation }: RootTabScreenProps<'Fakenstein'>) {
+export default function GalleryScreen({ navigation }: RootTabScreenProps<'Gallery'>) {
     const [image, setImage] = useState(null);
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
+        // Result object is: {cancelled:, height:, type:, uri:, width: }
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
-          aspect: [4, 3],
+          // aspect: [16, 9],
           quality: 1,
         });
 
         console.log(result);
+        // get ratio for the app
 
         if (!result.cancelled) {
           setImage(result.uri);
         }
+        navigation.push('SelectFace', {
+            navigation: navigation
+        });
+
     };
 
     return (
     <View style={styles.container}>
-        <TouchableOpacity onPress={pickImage} style={styles.helpLink}>
+        <TouchableOpacity onPress={pickImage} >
           <Text style={styles.galleryText}>
-            Open Gallery
+            Go To Gallery
           </Text>
         </TouchableOpacity>
-        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+        {image && <Image source={{ uri: image }} style={{ height: '90%', width: '90%'}} />}
     </View>
     );
 }
@@ -40,23 +45,18 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Fakens
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.dark.background,
-  },
-  title: {
-    fontSize: 24,
-     color: Colors.dark.text,
   },
   separator: {
     marginVertical: 30,
     height: 1,
     width: '80%',
   },
-  helpLink: {
-      paddingVertical: 8,
-    },
-    galleryText: {
-      fontSize: 24,
-      textAlign: 'center',
-      color: Colors.dark.text,
-    },
+  galleryText: {
+    fontSize: 24,
+    textAlign: 'center',
+    color: Colors.dark.text,
+  },
 });

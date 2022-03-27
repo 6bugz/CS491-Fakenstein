@@ -12,10 +12,13 @@ import { ColorSchemeName, Pressable } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import TutorialScreen from '../screens/TutorialScreen';
-import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import GalleryScreen from '../screens/GalleryScreen';
+import {
+    TutorialScreen,
+    NotFoundScreen,
+    WelcomeScreen,
+    GalleryScreen,
+    SelectFaceScreen
+ } from '../screens/screens';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -36,11 +39,37 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+  const colorScheme = 'dark';
+
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Root" component={WelcomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="Tutorial" component={TutorialScreen} />
+      <Stack.Screen
+        name="Gallery"
+        component={GalleryScreen}
+        options={({ navigation }: RootTabScreenProps<'Gallery'>) => (
+        {
+          title: "Gallery",
+          tabBarIcon: ({ color }) => <TabBarIcon name="photo" color={color} />,
+          headerRight: () => (
+              <Pressable
+                onPress={() => navigation.navigate('Tutorial')}
+                style={({ pressed }) => ({
+                  opacity: pressed ? 0.5 : 1,
+                })}>
+                <FontAwesome
+                  name="info-circle"
+                  size={25}
+                  color={Colors[colorScheme].tabIconDefault}
+                  style={{ marginRight: 15 }}
+                />
+              </Pressable>
+          ),
+        })}
+      />
+      <Stack.Screen name="SelectFace" component={SelectFaceScreen} />
     </Stack.Navigator>
   );
 }
@@ -62,11 +91,10 @@ function BottomTabNavigator() {
       }}>
       <BottomTab.Screen
         name="TabOne"
-        component={TabOneScreen}
+        component={WelcomeScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
           title: 'Welcome',
           tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
-
         })}
       />
       <BottomTab.Screen
