@@ -6,7 +6,6 @@ import { Text, View } from '../components/Themed';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function GalleryScreen({ navigation }: RootTabScreenProps<'Gallery'>) {
-    const [image, setImage] = useState(null);
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -19,15 +18,13 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
         });
 
         console.log(result);
-        // get ratio for the app
+        // get image ratio for the app
 
         if (!result.cancelled) {
-          setImage(result.uri);
+          navigation.push('SelectFace', {
+                      image: result
+          });
         }
-        navigation.push('SelectFace', {
-            navigation: navigation
-        });
-
     };
 
     return (
@@ -37,7 +34,6 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
             Go To Gallery
           </Text>
         </TouchableOpacity>
-        {image && <Image source={{ uri: image }} style={{ height: '90%', width: '90%'}} />}
     </View>
     );
 }
@@ -48,11 +44,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.dark.background,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
   },
   galleryText: {
     fontSize: 24,

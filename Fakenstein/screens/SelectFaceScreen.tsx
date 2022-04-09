@@ -4,14 +4,19 @@ import { StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Colors from '../constants/Colors';
 import { Text, View } from '../components/Themed';
 
-export default function SelectFaceScreen(
-    { navigation }: RootTabScreenProps<'SelectFace'>) {
+
+export default function SelectFaceScreen({route, navigation}) {
+    const [image, setImage] = useState(null);
+
+    useEffect(() => {
+      console.log(route);
+      const {image} = route.params;
+      setImage(image);
+    }, []);
 
     return (
     <View style={styles.container}>
-      <Text style={styles.galleryText}>
-        SelectFace
-      </Text>
+      {!!image && <Image source={{ uri: image.uri }} style={{ height: '90%', width: '90%'}} />}
     </View>
     );
 }
@@ -23,9 +28,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.dark.background,
   },
-  galleryText: {
-      fontSize: 24,
-      textAlign: 'center',
-      color: Colors.dark.text,
-    },
 });
