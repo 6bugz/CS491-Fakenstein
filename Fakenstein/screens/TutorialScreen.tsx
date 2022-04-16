@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet } from 'react-native';
 
 import { Text, View } from '../components/Themed';
-import Colors from '../constants/Colors';
+import {Colors} from '../constants/Colors';
 
 export default function TutorialScreen() {
   return (

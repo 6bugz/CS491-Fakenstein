@@ -1,7 +1,7 @@
 import { RootTabScreenProps } from '../types';
 import React, { useState } from 'react';
 import { StyleSheet, Image, TouchableOpacity} from 'react-native';
-import Colors from '../constants/Colors';
+import {Colors} from '../constants/Colors';
 import { Text, View } from '../components/Themed';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -10,19 +10,49 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         // Result object is: {cancelled:, height:, type:, uri:, width: }
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
+        let response = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: 'photo',
           allowsEditing: true,
           // aspect: [16, 9],
           quality: 1,
         });
 
-        console.log(result);
-        // get image ratio for the app
+        console.log('Gallery Response = ', response);
 
-        if (!result.cancelled) {
+        if (response.cancelled) {
+          console.log('User cancelled image picker');
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        } else {
+          // You can also display the image using data:
+          // const source = { uri: 'data:image/jpeg;base64,' + response.data };
           navigation.push('SelectFace', {
-                      image: result
+              image: response
+          });
+        }
+    };
+
+    const openCamera = async () => {
+        // No permissions request is necessary for launching the image library
+        // Result object is: {cancelled:, height:, type:, uri:, width: }
+        let response = await ImagePicker.launchCameraAsync({
+          mediaTypes: 'photo',
+          allowsEditing: true,
+          // aspect: [16, 9],
+          quality: 1,
+        });
+
+        console.log('Camera Response = ', response);
+
+        if (response.cancelled) {
+          console.log('User cancelled image picker');
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        } else {
+          // You can also display the image using data:
+          // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+          navigation.push('SelectFace', {
+              image: response
           });
         }
     };
@@ -31,7 +61,12 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
     <View style={styles.container}>
         <TouchableOpacity onPress={pickImage} >
           <Text style={styles.galleryText}>
-            Go To Gallery
+            Select From Gallery
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={openCamera} >
+          <Text style={styles.galleryText}>
+            Open Camera
           </Text>
         </TouchableOpacity>
     </View>

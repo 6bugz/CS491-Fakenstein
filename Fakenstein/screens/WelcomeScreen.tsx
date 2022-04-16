@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
-import Colors from '../constants/Colors';
+import {Colors} from '../constants/Colors';
 
 import logo from '../assets/images/logo.png'
 
