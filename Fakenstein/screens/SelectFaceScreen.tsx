@@ -1,48 +1,32 @@
 import { RootTabScreenProps } from '../types';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, TouchableOpacity} from 'react-native';
+import { StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {Colors, Box} from '../constants/Colors';
 import { Text, View } from '../components/Themed';
+import FaceBox from '../components/FaceBox';
 
-import Svg, {
-  SvgUri,
-  Circle,
-  Rect,
-  Image,
-} from 'react-native-svg';
 
 export default function SelectFaceScreen({route, navigation}) {
     const [image, setImage] = useState(null);
-    const [selected, setSelected] = useState(false);
+    const [faces, setFaces] = useState([]);
 
     useEffect(() => {
       console.log(route);
       const {image} = route.params;
       setImage(image);
+      setFaces([{isBackground: true, height: 200, width: 150, top: 100, left: 400},
+        {isBackground: false, height: 250, width: 150, top: 300, left: 200},]);
     }, []);
 
-    const selectBox = () => {
-        setSelected(!selected);
-    };
 
     return (
     <View style={styles.container}>
       {!!image &&
-        <Svg height="100%" width="100%">
-          <Image
-            x="0%"
-            y="0%"
-            width="100%"
-            height="100%"
-            href={image.uri}
-          />
-        </Svg>
+        <Image source={{ uri: image.uri }} style={{ height: '90%', width: '90%'}}/>
       }
-      <TouchableOpacity onPress={selectBox} style={{position: 'absolute'}}>
-        <Svg height="100%" width="100%" position="absolute">
-            <Rect x="400" y="400" width="50" height="50" fill={selected ? Box.selected : Box.transparent} stroke={Box.border}/>
-        </Svg>
-      </TouchableOpacity>
+      {(faces.length > 0) && faces.map((face, index) => (
+          <FaceBox key={index} face={face}/>
+      ))}
     </View>
     );
 }
@@ -55,7 +39,3 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.dark.background,
   },
 });
-
-/*
-<Image source={{ uri: image.uri }} style={{ height: '90%', width: '90%'}}/>
-*/
