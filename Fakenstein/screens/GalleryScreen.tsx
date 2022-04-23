@@ -21,8 +21,6 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
 
         if (response.cancelled) {
           console.log('User cancelled image picker');
-        } else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
         } else {
           // You can also display the image using data:
           // const source = { uri: 'data:image/jpeg;base64,' + response.data };
@@ -33,7 +31,7 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
     };
 
     const openCamera = async () => {
-        // No permissions request is necessary for launching the image library
+        // Permission to open camera requested if not already granted
         // Result object is: {cancelled:, height:, type:, uri:, width: }
         let response = await ImagePicker.launchCameraAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -46,8 +44,6 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
 
         if (response.cancelled) {
           console.log('User cancelled image picker');
-        } else if (response.error) {
-          console.log('ImagePicker Error: ', response.error);
         } else {
           navigation.push('SelectFace', {
               image: response

@@ -5,13 +5,14 @@
  */
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { ColorSchemeName, Pressable } from 'react-native';
+import { Text } from '../components/Themed';
 
 import {Colors} from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
+import ModifyScreen from '../screens/ModifyScreen';
 import {
     TutorialScreen,
     NotFoundScreen,
@@ -42,6 +43,7 @@ function RootNavigator() {
   const colorScheme = 'dark';
 
 
+  // @ts-ignore
   return (
     <Stack.Navigator>
       <Stack.Screen name="Root" component={WelcomeScreen} options={{ headerShown: false }} />
@@ -75,14 +77,14 @@ function RootNavigator() {
         {
           headerRight: () => (
               <Pressable
-                onPress={() => navigation.navigate('Tutorial')}
+                onPress={() => navigation.navigate('Modify')}
                 style={({ pressed }) => ({
-                  opacity: pressed ? 0.5 : 1,
-                })}>
-                <Feather name="droplet" size={24} color="white" style={{ marginRight: 15 }}/>
+                  opacity: pressed ? 0.5 : 1,})}>
+                  <Text style={{color: 'white'}}>Next</Text>
               </Pressable>
           ),
         })}/>
+      <Stack.Screen name="Modify" component={ModifyScreen} />
     </Stack.Navigator>
   );
 }
@@ -120,8 +122,7 @@ function BottomTabNavigator() {
               <Pressable
                 onPress={() => navigation.navigate('Tutorial')}
                 style={({ pressed }) => ({
-                  opacity: pressed ? 0.5 : 1,
-                })}>
+                  opacity: pressed ? 0.5 : 1,})}>
                 <FontAwesome
                   name="info-circle"
                   size={25}
