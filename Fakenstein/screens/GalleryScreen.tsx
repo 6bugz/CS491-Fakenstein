@@ -11,7 +11,7 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
         // No permissions request is necessary for launching the image library
         // Result object is: {cancelled:, height:, type:, uri:, width: }
         let response = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: 'photo',
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
           // aspect: [16, 9],
           quality: 1,
@@ -36,7 +36,7 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
         // No permissions request is necessary for launching the image library
         // Result object is: {cancelled:, height:, type:, uri:, width: }
         let response = await ImagePicker.launchCameraAsync({
-          mediaTypes: 'photo',
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
           // aspect: [16, 9],
           quality: 1,
@@ -49,8 +49,6 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
         } else if (response.error) {
           console.log('ImagePicker Error: ', response.error);
         } else {
-          // You can also display the image using data:
-          // const source = { uri: 'data:image/jpeg;base64,' + response.data };
           navigation.push('SelectFace', {
               image: response
           });
