@@ -28,14 +28,21 @@ const storage = getStorage(app);
 
 //renderFaces('female', 'old', 'dark');
 export function renderFaces(gender: string, age: string, skinColor: string) {
-  get(child(reference, gender + '/' + age + '/' + skinColor)).then((snapshot) => {
+  const path = gender + '/' + age + '/' + skinColor
+  get(child(reference, path)).then((snapshot) => {
     if (snapshot.exists()) {
       console.log(snapshot.val());
-      //[empty, 'DSC01200.JPG']
       const results = snapshot.val();
+      let imgNames: string[] = [];
+      Object.entries(results).forEach(
+          ([key, value]) => {
+            console.log(key, value);
+            imgNames.push(value + ".png");
+          }
+      );
       // select first answer
-      console.log(results[1]);
-      getDownloadURL(stref(storage, 'images/' + results[1]))
+      console.log(imgNames[1]);
+      getDownloadURL(stref(storage, 'images/' + imgNames[1]))
           .then((url) => {
             // `url` is the download URL for 'images/stars.jpg'
             const img = document.getElementById('myimg');

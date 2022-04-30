@@ -16,8 +16,8 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
   }
 
   const getJsonData = () => {
-    fetch('https://www.boredapi.com/api/activity',
-        {method: 'GET'}).then((response) =>
+    fetch(' http://139.179.205.77:5000/face', {method: 'GET'})
+        .then((response) =>
         response.json()).then((responseJson) => {
       console.log(responseJson);
     }).catch((error) => console.log(error.message));
