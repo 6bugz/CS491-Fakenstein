@@ -1,6 +1,6 @@
 import { RootTabScreenProps } from '../types';
-import React, { useState } from 'react';
-import { StyleSheet, Image, TouchableOpacity} from 'react-native';
+import React from 'react';
+import { StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { Text, View } from '../components/Themed';
 import * as ImagePicker from 'expo-image-picker';
