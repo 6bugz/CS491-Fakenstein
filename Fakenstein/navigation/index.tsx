@@ -3,24 +3,22 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome, Feather } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { FontAwesome } from '@expo/vector-icons';
 import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { ColorSchemeName, Pressable } from 'react-native';
-import { Text } from '../components/Themed';
 
 import {Colors} from '../constants/Colors';
-import ModifyScreen from '../screens/ModifyScreen';
 import {
     TutorialScreen,
     NotFoundScreen,
     WelcomeScreen,
     GalleryScreen,
-    SelectFaceScreen
+    SelectFaceScreen,
+    ModifyScreen
  } from '../screens/screens';
-import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
+import { RootStackParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
@@ -55,7 +53,6 @@ function RootNavigator() {
         options={({ navigation }: RootTabScreenProps<'Gallery'>) => (
         {
           title: "Gallery",
-          tabBarIcon: ({ color }) => <TabBarIcon name="photo" color={color} />,
           headerRight: () => (
               <Pressable
                 onPress={() => navigation.navigate('Tutorial')}
@@ -72,77 +69,9 @@ function RootNavigator() {
           ),
         })}
       />
-      <Stack.Screen name="SelectFace" component={SelectFaceScreen}
-        options={({ navigation }: RootTabScreenProps<'SelectFace'>) => (
-        {
-          headerRight: () => (
-              <Pressable
-                onPress={() => navigation.navigate('Modify')}
-                style={({ pressed }) => ({
-                  opacity: pressed ? 0.5 : 1,})}>
-                  <Text style={{color: 'white'}}>Next</Text>
-              </Pressable>
-          ),
-        })}/>
+      <Stack.Screen name="SelectFace" component={SelectFaceScreen} options={{ title: 'Fake-ify Your Image'}}/>
       <Stack.Screen name="Modify" component={ModifyScreen} />
     </Stack.Navigator>
   );
 }
 
-/**
- * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
- * https://reactnavigation.org/docs/bottom-tab-navigator
- */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
-
-function BottomTabNavigator() {
-  const colorScheme = 'dark';
-
-  return (
-    <BottomTab.Navigator
-      initialRouteName="TabOne"
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}>
-      <BottomTab.Screen
-        name="TabOne"
-        component={WelcomeScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Welcome',
-          tabBarIcon: ({ color }) => <TabBarIcon name="heart" color={color} />,
-        })}
-      />
-      <BottomTab.Screen
-        name="TabTwo"
-        component={GalleryScreen}
-        options={({ navigation }: RootTabScreenProps<'Gallery'>) => ({
-          title: 'Gallery',
-          tabBarIcon: ({ color }) => <TabBarIcon name="photo" color={color} />,
-          headerRight: () => (
-              <Pressable
-                onPress={() => navigation.navigate('Tutorial')}
-                style={({ pressed }) => ({
-                  opacity: pressed ? 0.5 : 1,})}>
-                <FontAwesome
-                  name="info-circle"
-                  size={25}
-                  color={Colors[colorScheme].tabIconDefault}
-                  style={{ marginRight: 15 }}
-                />
-              </Pressable>
-            ),
-        })}
-      />
-    </BottomTab.Navigator>
-  );
-}
-
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-}

@@ -1,26 +1,33 @@
 import { StyleSheet, TouchableOpacity, Image } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
+import React from 'react';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 import {Colors} from '../constants/Colors';
 
-import logo from '../assets/images/logo.png'
 
 export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakenstein'>) {
-  function handleGoToGallery() {
+  const handleGoToGallery = () => {
     navigation.push('Gallery');
   }
 
-  function handleGoToAbout() {
+  const handleGoToAbout = () => {
+    getJsonData();
     navigation.push('NotFound');
+  }
+
+  const getJsonData = () => {
+    fetch('https://www.boredapi.com/api/activity',
+        {method: 'GET'}).then((response) =>
+        response.json()).then((responseJson) => {
+      console.log(responseJson);
+    }).catch((error) => console.log(error.message));
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>FAKENSTEIN</Text>
       <View style={styles.infoContainer}>
-          <Image style={styles.logo} source={logo} alt="Logo" />
+          <Image style={styles.logo} source={require('../assets/images/logo.png')} />
           <TouchableOpacity onPress={handleGoToGallery} style={styles.galleryText}>
             <Text style={styles.infoText}>
               START FAKE-ING!
