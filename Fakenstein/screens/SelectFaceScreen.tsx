@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {Dimensions, StyleSheet, Image, Route, Pressable} from 'react-native';
 import {Colors} from '../constants/Colors';
-import {Text, View} from '../components/Themed';
+import {View} from '../components/Themed';
 import FaceBox from '../components/FaceBox';
 import {BoundaryBox} from "../constants/Face";
 import {backendURL, ImageType, Navigation} from "../constants/typesUtil";
+import BottomToolBox from "../components/BottomToolBox";
 
 
 type Props = {
@@ -53,7 +54,8 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     const faces = boxes.map((face, index) =>
       (face.isBackground ? {[index]: face} : null)
     );
-    data.append("image", {uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
+    // @ts-ignore
+    data.append("image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
     data.append("faces", JSON.stringify(faces));
     console.log(data)
 
@@ -80,22 +82,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
             <FaceBox key={index} inx={index} face={face} handler={setBackground}/>
         ))}
       </View>
-      <View style={styles.toolboxContainer}>
-        <View style={styles.toolboxBar}>
-          <Pressable onPress={() => console.log("Pressed")} style={styles.behave}
-                     android_ripple={{borderless:true, radius: 50}}>
-            <Text style={styles.text}>Undo</Text>
-          </Pressable>
-          <Pressable onPress={() => console.log("Pressed")} style={styles.behave}
-                     android_ripple={{borderless:true, radius: 50}}>
-            <Text style={styles.text}>Edit</Text>
-          </Pressable>
-          <Pressable onPress={() => goToModify()} style={styles.behave}
-                     android_ripple={{borderless:true, radius: 50}}>
-            <Text style={styles.text}>Next</Text>
-          </Pressable>
-        </View>
-      </View>
+      <BottomToolBox right={null} middle={null} next={goToModify}/>
     </View>
   );
 }
@@ -117,27 +104,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: 'transparent',
     width: Dimensions.get('window').width,
-  },
-  text: {
-    color: Colors.dark.text,
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  toolboxContainer: {
-    position: 'absolute',
-    alignItems: "center",
-    bottom: 20,
-    backgroundColor: "transparent",
-  },
-  toolboxBar: {
-    flexDirection: "row",
-    backgroundColor: "gray",
-    opacity: 0.8,
-    width: "90%",
-    justifyContent: "space-evenly",
-    borderRadius: 40,
-  },
-  behave: {
-    padding: 10,
   },
 });

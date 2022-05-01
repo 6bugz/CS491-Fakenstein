@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
+import {BoundaryBox} from "../constants/Face";
+import {Text} from "./Themed";
 
+type Props = {
+  inx: number;
+  face: BoundaryBox;
+  handler: any;
+}
 
-export default function FaceBox({inx, face, handler}) {
+export default function FaceBox({inx, face, handler}: Props) {
     const [selected, setSelected] = useState(false);
 
     useEffect(() => {
@@ -16,6 +23,7 @@ export default function FaceBox({inx, face, handler}) {
 
     return (<TouchableOpacity onPress={selectBox} style={
       [
+        styles.box,
         selected ? styles.boxBackground : styles.boxForeground,
         {
           height: face.height,
@@ -23,32 +31,31 @@ export default function FaceBox({inx, face, handler}) {
           top: face.top,
           left: face.left,
         }]}
-      />);
+      >
+      <Text>{selected ? "Background" : "Foreground"}</Text>
+    </TouchableOpacity>);
 }
 
 const styles = StyleSheet.create({
-  boxForeground: {
+  box: {
     position: 'absolute',
-    borderColor: 'green',
-    backgroundColor: 'green',
     borderWidth: 2,
     borderRadius: 4,
     opacity: 0.3,
+    alignItems: "flex-start",
+  },
+  boxForeground: {
+    borderColor: 'green',
+    backgroundColor: 'green',
   },
   boxBackground: {
-    position: 'absolute',
     borderColor: 'yellow',
     backgroundColor: 'yellow',
-    borderWidth: 2,
-    borderRadius: 4,
     opacity: 0.5,
   },
   boxSelected: {
-    position: 'absolute',
     borderColor: 'blue',
     backgroundColor: 'blue',
-    borderWidth: 2,
-    borderRadius: 4,
     opacity: 0.5,
   },
 });

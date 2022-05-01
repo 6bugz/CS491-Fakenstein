@@ -9,6 +9,7 @@ import {backendURL} from "../constants/typesUtil";
 export default function GalleryScreen({ navigation }: RootTabScreenProps<'Gallery'>) {
   const toServer = async (image) => {
     const data=new FormData();
+    // @ts-ignore
     data.append("image", {uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
 
     await fetch(backendURL + '/detect', {

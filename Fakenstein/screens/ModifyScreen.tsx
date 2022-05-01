@@ -1,8 +1,12 @@
-import React, { useEffect } from 'react';
-import {Dimensions, Route, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Image, Pressable, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { Text, View } from '../components/Themed';
-import {Navigation} from "../constants/typesUtil";
+import {ImageType, Navigation} from "../constants/typesUtil";
+import FaceBox from "../components/FaceBox";
+import BottomToolBox from "../components/BottomToolBox";
+import PopupBox from "../components/PopupBox";
+import {BoundaryBox} from "../constants/Face";
 
 type Props = {
   route: Route;
@@ -10,19 +14,38 @@ type Props = {
 }
 
 export default function ModifyScreen({route, navigation}: Props) {
+  const image: ImageType = (route.params.image);
+  const [boxes, setBoxes] = useState<BoundaryBox[]>(route.params.boxes);
 
   useEffect(() => {
     console.log("Modify");
-    console.log(route.params);
+    console.log(boxes);
   }, []);
+
+  const handlePushToExport = () => {
+    navigation.push('Export', {
+      image: image
+    });
+  }
 
 
   return  (
+    !!image && (
       <View style={styles.container}>
         <Text style={styles.text}>Select faces to modify</Text>
+        <Image source={{uri: image.uri}} style={styles.image}/>
+        <View style={styles.boxContainer}>
+          {(boxes.length > 0) && boxes.map((face, index) => (
+            <PopupBox key={index} inx={index} face={face} handler={null}/>
+          ))}
+        </View>
+        <BottomToolBox right={null} middle={null} next={null}/>
       </View>
+    )
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -40,7 +63,6 @@ const styles = StyleSheet.create({
   boxContainer: {
     position: 'absolute',
     backgroundColor: 'transparent',
-    width: Dimensions.get('window').width,
   },
   text: {
     color: Colors.dark.text,

@@ -16,8 +16,9 @@ import {
     WelcomeScreen,
     GalleryScreen,
     SelectFaceScreen,
-    ModifyScreen
- } from '../screens/screens';
+    ModifyScreen,
+    ExportScreen
+ } from './screens';
 import { RootStackParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 
@@ -71,9 +72,14 @@ function RootNavigator() {
         })}
       />
       <Stack.Screen name="SelectFace" component={SelectFaceScreen} options={{
-          title: 'Fake-ify Your Image',
+          title: 'Select Background Images',
       }}/>
-      <Stack.Screen name="Modify" component={ModifyScreen} />
+      <Stack.Screen name="Modify" component={ModifyScreen} options={{
+        title: 'Modify Generated Faces',
+      }}/>
+      <Stack.Screen name="Export" component={ExportScreen} options={{
+        title: 'Export Image',
+      }}/>
     </Stack.Navigator>
   );
 }

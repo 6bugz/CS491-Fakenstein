@@ -21,6 +21,7 @@ export type RootStackParamList = {
   Gallery: undefined;
   SelectFace: {image: ImageInfo, boxes: BoundaryBox[]};
   Modify: undefined;
+  Export: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
