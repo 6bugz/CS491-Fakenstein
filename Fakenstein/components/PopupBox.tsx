@@ -12,6 +12,7 @@ export default function PopupBox({inx, face, handler}: Props) {
   const [selected, setSelected] = useState(false);
 
   useEffect(() => {
+    console.log(face)
     setSelected(face.isBackground);
   }, []);
 

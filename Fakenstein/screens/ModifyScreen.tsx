@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Image, Pressable, Route, StyleSheet} from 'react-native';
+import {Dimensions, Image, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { Text, View } from '../components/Themed';
 import {ImageType, Navigation} from "../constants/typesUtil";
-import FaceBox from "../components/FaceBox";
 import BottomToolBox from "../components/BottomToolBox";
 import PopupBox from "../components/PopupBox";
 import {BoundaryBox} from "../constants/Face";
@@ -20,6 +19,7 @@ export default function ModifyScreen({route, navigation}: Props) {
   useEffect(() => {
     console.log("Modify");
     console.log(boxes);
+
   }, []);
 
   const handlePushToExport = () => {
@@ -39,7 +39,7 @@ export default function ModifyScreen({route, navigation}: Props) {
             <PopupBox key={index} inx={index} face={face} handler={null}/>
           ))}
         </View>
-        <BottomToolBox right={null} middle={null} next={null}/>
+        <BottomToolBox right={null} middle={null} next={handlePushToExport}/>
       </View>
     )
   );

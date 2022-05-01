@@ -15,15 +15,16 @@ type Props = {
 
 export default function SelectFaceScreen({route, navigation}: Props) {
   const dWidth = Dimensions.get('window').width;
-  const image: ImageType = (route.params.image);
+  const image: ImageType = route.params.image;
   const imageHeight = Math.round(dWidth / image.width * image.height);
 
   const [boxes, setBoxes] = useState<BoundaryBox[]>([]);
+  const [serverBoxes, setServerBoxes] = useState<BoundaryBox[]>(route.params.boxes);
 
   useEffect( () => {
     console.log(dWidth + ", " + imageHeight);
     console.log(image.width + ", " + image.height );
-    resizeBoxes(route.params.boxes);
+    resizeBoxes(serverBoxes);
   }, []);
 
   const resizeBoxes = (boxes : BoundaryBox[]) => {
@@ -46,12 +47,13 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     const tmp = boxes;
     tmp[index].isBackground = val;
     setBoxes(tmp);
+    serverBoxes[index].isBackground = val;
     console.log(index + " " + val);
   }
 
   const goToModify = () => {
     const data=new FormData();
-    const faces = boxes.map((face, index) =>
+    const faces = serverBoxes.map((face, index) =>
       (face.isBackground ? {[index]: face} : null)
     );
     // @ts-ignore
