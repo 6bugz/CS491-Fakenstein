@@ -11,16 +11,7 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
   }
 
   const handleGoToAbout = () => {
-    getJsonData();
     navigation.push('NotFound');
-  }
-
-  const getJsonData = () => {
-    fetch(' http://139.179.205.77:5000/face', {method: 'GET'})
-        .then((response) =>
-        response.json()).then((responseJson) => {
-      console.log(responseJson);
-    }).catch((error) => console.log(error.message));
   }
 
   return (

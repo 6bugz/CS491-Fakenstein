@@ -1,33 +1,30 @@
 import { RootTabScreenProps } from '../types';
-import React, {useState} from 'react';
+import React from 'react';
 import { StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { Text, View } from '../components/Themed';
 import * as ImagePicker from 'expo-image-picker';
-import * as FS from "expo-file-system";
+import {backendURL} from "../constants/typesUtil";
 
 export default function GalleryScreen({ navigation }: RootTabScreenProps<'Gallery'>) {
-  const [response, setResponse] = useState("");
+  const toServer = async (image) => {
+    const data=new FormData();
+    data.append("image", {uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
 
-  const toServer = async (mediaFile: { base64: string | undefined, uri: string; }) => {
-    let schema = "http://";
-    let host = "139.179.205.77";
-    let port = "5000";
-    let route = "/face";
-    let content_type = "image/jpeg";
-    const url = schema + host + ":" + port + route;
+    await fetch(backendURL + '/detect', {
+      method: 'POST',
+      headers: { "Content-Type": "multipart/form-data" },
+      body: data,
+    }).then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
 
-    let response = await FS.uploadAsync(url, mediaFile.uri, {
-      headers: {
-        "content-type": content_type,
-      },
-      httpMethod: "POST",
-      uploadType: FS.FileSystemUploadType.BINARY_CONTENT,
-    });
-
-    setResponse(response.toString());
-    return response;
-  };
+        navigation.push('SelectFace', {
+          image: image,
+          boxes: responseJson,
+        });
+      }).catch((error) => console.log(error.message));
+  }
 
   const pickImage = async () => {
       // No permissions request is necessary for launching the image library
@@ -35,7 +32,6 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
       let response = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
-        base64: true,
         quality: 1,
       });
 
@@ -44,16 +40,7 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
       if (response.cancelled) {
         console.log('User cancelled image picker');
       } else {
-
-        await toServer({
-          base64: response.base64,
-          uri: response.uri,
-        }).then((r) => console.log(r))
-            .catch((e) => console.log(e.message));
-
-        //navigation.push('SelectFace', {
-          //  image: response
-        //});
+        await toServer(response);
       }
   };
 
@@ -63,7 +50,6 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
       let response = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
-        // aspect: [16, 9],
         quality: 1,
       });
 
@@ -72,9 +58,7 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
       if (response.cancelled) {
         console.log('User cancelled image picker');
       } else {
-        navigation.push('SelectFace', {
-            image: response
-        });
+        await toServer(response);
       }
   };
 
@@ -90,9 +74,6 @@ export default function GalleryScreen({ navigation }: RootTabScreenProps<'Galler
         Open Camera
       </Text>
     </TouchableOpacity>
-    <Text style={styles.galleryText}>
-      {response}
-    </Text>
   </View>
   );
 }

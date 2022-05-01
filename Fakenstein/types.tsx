@@ -6,6 +6,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {ImageInfo} from "expo-image-picker";
+import {BoundaryBox} from "./constants/Face";
 
 declare global {
   namespace ReactNavigation {
@@ -15,11 +16,10 @@ declare global {
 
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  Modal: undefined;
+  Tutorial: undefined;
   NotFound: undefined;
   Gallery: undefined;
-  SelectFace: {image: ImageInfo};
-  Tutorial: undefined;
+  SelectFace: {image: ImageInfo, boxes: BoundaryBox[]};
   Modify: undefined;
 };
 

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity} from 'react-native';
-import { Text, View } from '../components/Themed';
 
 
-export default function FaceBox({face}) {
+export default function FaceBox({inx, face, handler}) {
     const [selected, setSelected] = useState(false);
 
     useEffect(() => {
@@ -12,6 +11,7 @@ export default function FaceBox({face}) {
 
     const selectBox = () => {
         setSelected(!selected);
+        handler(inx, !face.isBackground);
     };
 
     return (<TouchableOpacity onPress={selectBox} style={
@@ -39,6 +39,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderColor: 'yellow',
     backgroundColor: 'yellow',
+    borderWidth: 2,
+    borderRadius: 4,
+    opacity: 0.5,
+  },
+  boxSelected: {
+    position: 'absolute',
+    borderColor: 'blue',
+    backgroundColor: 'blue',
     borderWidth: 2,
     borderRadius: 4,
     opacity: 0.5,

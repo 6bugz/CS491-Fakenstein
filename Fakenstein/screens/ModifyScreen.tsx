@@ -1,13 +1,19 @@
 import React, { useEffect } from 'react';
-import {Dimensions, StyleSheet} from 'react-native';
+import {Dimensions, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { Text, View } from '../components/Themed';
+import {Navigation} from "../constants/typesUtil";
 
+type Props = {
+  route: Route;
+  navigation: Navigation;
+}
 
-export default function ModifyScreen() {
+export default function ModifyScreen({route, navigation}: Props) {
 
   useEffect(() => {
     console.log("Modify");
+    console.log(route.params);
   }, []);
 
 

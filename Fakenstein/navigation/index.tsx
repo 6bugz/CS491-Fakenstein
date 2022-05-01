@@ -53,6 +53,7 @@ function RootNavigator() {
         options={({ navigation }: RootTabScreenProps<'Gallery'>) => (
         {
           title: "Gallery",
+          gestureDirection: 'horizontal-inverted',
           headerRight: () => (
               <Pressable
                 onPress={() => navigation.navigate('Tutorial')}
@@ -69,7 +70,9 @@ function RootNavigator() {
           ),
         })}
       />
-      <Stack.Screen name="SelectFace" component={SelectFaceScreen} options={{ title: 'Fake-ify Your Image'}}/>
+      <Stack.Screen name="SelectFace" component={SelectFaceScreen} options={{
+          title: 'Fake-ify Your Image',
+      }}/>
       <Stack.Screen name="Modify" component={ModifyScreen} />
     </Stack.Navigator>
   );

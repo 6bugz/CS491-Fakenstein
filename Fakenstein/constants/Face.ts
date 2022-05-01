@@ -4,4 +4,7 @@ export type BoundaryBox = {
     width: number;
     top: number;
     left: number;
+    age?: boolean;
+    gender?: boolean;
+    skinColor?: boolean;
 };
