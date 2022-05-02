@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Image, Route, StyleSheet} from 'react-native';
+import {Image, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import {View} from '../components/Themed';
 import FaceBox from '../components/FaceBox';
@@ -19,7 +19,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
   const imageHeight = Math.round(dWidth / image.width * image.height);
 
   const [boxes, setBoxes] = useState<BoundaryBox[]>([]);
-  const [serverBoxes, setServerBoxes] = useState<BoundaryBox[]>(route.params.boxes);
+  const [serverBoxes] = useState<BoundaryBox[]>(route.params.boxes);
 
   useEffect( () => {
     console.log(dWidth + ", " + imageHeight);
@@ -73,7 +73,13 @@ export default function SelectFaceScreen({route, navigation}: Props) {
           boxes: modifyBoxes,
         });
       }).catch((error) => console.log(error.message));
+  }
 
+  const handleFakeNavigation = () => {
+    navigation.push('Modify', {
+      image: image,
+      boxes: boxes,
+    });
   }
 
   return !!image && (
@@ -84,7 +90,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
             <FaceBox key={index} inx={index} face={face} handler={setBackground}/>
         ))}
       </View>
-      <BottomToolBox undo={null}  next={goToModify}/>
+      <BottomToolBox undo={null}  next={handleFakeNavigation}/>
     </View>
   );
 }
@@ -98,13 +104,13 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    width: Dimensions.get('window').width,
+    width: dWidth,
     height: undefined,
     resizeMode: 'contain',
   },
   boxContainer: {
     position: 'absolute',
     backgroundColor: 'transparent',
-    width: Dimensions.get('window').width,
+    width: dWidth,
   },
 });

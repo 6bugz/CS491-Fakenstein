@@ -18,10 +18,9 @@ export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Tutorial: undefined;
   NotFound: undefined;
-  Gallery: undefined;
   SelectFace: {image: ImageInfo, boxes: BoundaryBox[]};
-  Modify: undefined;
-  Export: undefined;
+  Modify: {image: ImageInfo, boxes: BoundaryBox[]};
+  Export: {image: ImageInfo};
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -31,7 +30,6 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
 
 export type RootTabParamList = {
   Fakenstein: undefined;
-  Gallery: undefined;
   SelectFace: undefined;
   Tutorial: undefined;
 };

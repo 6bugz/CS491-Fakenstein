@@ -7,4 +7,5 @@ export type BoundaryBox = {
     age?: boolean;
     gender?: boolean;
     skinColor?: boolean;
+    invalid?: boolean;
 };

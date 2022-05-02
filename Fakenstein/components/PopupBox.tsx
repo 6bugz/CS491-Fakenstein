@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useState } from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {BoundaryBox} from "../constants/Face";
 
 type Props = {
@@ -11,28 +11,30 @@ type Props = {
 export default function PopupBox({inx, face, handler}: Props) {
   const [selected, setSelected] = useState(false);
 
-  const selectBox = () => {
-    console.log("POPUP SELECTBOX");
+  const openEdit = () => {
     setSelected(!selected);
     handler(inx);
   };
 
-  return (<TouchableOpacity onPress={selectBox} style={
-    [
-      styles.box,
-      selected ? styles.boxSelected : styles.boxBackground,
-      {
-        height: face.height,
-        width: face.width,
-        top: face.top,
-        left: face.left-205,
-      }]}
-  />);
+  return (
+    <TouchableOpacity
+      onPress={openEdit}
+      style=
+        {
+          [styles.box, selected ? styles.boxSelected : styles.boxBackground, {
+            height: face.height,
+            width: face.width,
+            top: face.top,
+            left: face.left,
+          }]
+        }
+    />
+  );
 }
 
 const styles = StyleSheet.create({
   box: {
-    position: 'absolute',
+    position: "absolute",
     borderWidth: 2,
     borderRadius: 4,
     opacity: 0.3,

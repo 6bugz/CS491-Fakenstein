@@ -14,7 +14,6 @@ import {
     TutorialScreen,
     NotFoundScreen,
     WelcomeScreen,
-    GalleryScreen,
     SelectFaceScreen,
     ModifyScreen,
     ExportScreen
@@ -48,35 +47,42 @@ function RootNavigator() {
       <Stack.Screen name="Root" component={WelcomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="Tutorial" component={TutorialScreen} />
-      <Stack.Screen
-        name="Gallery"
-        component={GalleryScreen}
-        options={({ navigation }: RootTabScreenProps<'Gallery'>) => (
+      <Stack.Screen name="SelectFace" component={SelectFaceScreen} options={({ navigation }: RootTabScreenProps<'Gallery'>) => (
         {
-          title: "Gallery",
-          gestureDirection: 'horizontal-inverted',
+          title: "Select Background Images",
           headerRight: () => (
-              <Pressable
-                onPress={() => navigation.navigate('Tutorial')}
-                style={({ pressed }) => ({
-                  opacity: pressed ? 0.5 : 1,
-                })}>
-                <FontAwesome
-                  name="info-circle"
-                  size={25}
-                  color={Colors[colorScheme].tabIconDefault}
-                  style={{ marginRight: 15 }}
-                />
-              </Pressable>
+            <Pressable
+              onPress={() => navigation.navigate('Tutorial')}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <FontAwesome
+                name="info-circle"
+                size={25}
+                color={Colors[colorScheme].tabIconDefault}
+                style={{ marginRight: 15 }}
+              />
+            </Pressable>
           ),
-        })}
-      />
-      <Stack.Screen name="SelectFace" component={SelectFaceScreen} options={{
-          title: 'Select Background Images',
-      }}/>
-      <Stack.Screen name="Modify" component={ModifyScreen} options={{
-        title: 'Modify Generated Faces',
-      }}/>
+        })}/>
+      <Stack.Screen name="Modify" component={ModifyScreen} options={({ navigation }: RootTabScreenProps<'Gallery'>) => (
+        {
+          title: "Modify Generated Faces",
+          headerRight: () => (
+            <Pressable
+              onPress={() => navigation.navigate('Tutorial')}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <FontAwesome
+                name="info-circle"
+                size={25}
+                color={Colors[colorScheme].tabIconDefault}
+                style={{ marginRight: 15 }}
+              />
+            </Pressable>
+          ),
+        })}/>
       <Stack.Screen name="Export" component={ExportScreen} options={{
         title: 'Export Image',
       }}/>
