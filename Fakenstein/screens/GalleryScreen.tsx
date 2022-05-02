@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { Text, View } from '../components/Themed';
 import * as ImagePicker from 'expo-image-picker';
-import {backendURL} from "../constants/typesUtil";
+import {backendURL} from "../constants/utils";
 
 export default function GalleryScreen({ navigation }: RootTabScreenProps<'Gallery'>) {
   const toServer = async (image) => {

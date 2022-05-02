@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {Dimensions, Image,  Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { Text, View } from '../components/Themed';
-import {ImageType} from "../constants/typesUtil";
+import {ImageType} from "../constants/utils";
 
 type Props = {
   route: Route;
