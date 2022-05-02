@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import {Dimensions, StyleSheet, Image, Route, Pressable} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Image, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import {View} from '../components/Themed';
 import FaceBox from '../components/FaceBox';
 import {BoundaryBox} from "../constants/Face";
-import {backendURL, ImageType, Navigation} from "../constants/typesUtil";
+import {backendURL, dWidth, ImageType, Navigation, resizeBoxes} from "../constants/utils";
 import BottomToolBox from "../components/BottomToolBox";
 
+global.Buffer = require('buffer').Buffer;
 
 type Props = {
   route: Route;
@@ -14,7 +15,7 @@ type Props = {
 }
 
 export default function SelectFaceScreen({route, navigation}: Props) {
-  const dWidth = Dimensions.get('window').width;
+
   const image: ImageType = route.params.image;
   const imageHeight = Math.round(dWidth / image.width * image.height);
 
@@ -24,24 +25,9 @@ export default function SelectFaceScreen({route, navigation}: Props) {
   useEffect( () => {
     console.log(dWidth + ", " + imageHeight);
     console.log(image.width + ", " + image.height );
-    resizeBoxes(serverBoxes);
+    setBoxes(resizeBoxes( imageHeight, image, serverBoxes));
   }, []);
 
-  const resizeBoxes = (boxes : BoundaryBox[]) => {
-    let faceBoxes: BoundaryBox[] = [];
-    for (let box of boxes) {
-      const boundary = {
-        isBackground: box.isBackground,
-        height: box.height * imageHeight / image.height,
-        width: box.width * dWidth / image.width,
-        top: box.top * imageHeight / image.height,
-        left: box.left * dWidth / image.width,
-      };
-      console.log(boundary)
-      faceBoxes.push(boundary);
-    }
-    setBoxes(faceBoxes);
-  }
 
   const setBackground = (index: number, val: boolean) => {
     const tmp = boxes;
@@ -51,7 +37,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     console.log(index + " " + val);
   }
 
-  const goToModify = () => {
+  const goToModify = async () => {
     const data=new FormData();
     const faces = serverBoxes.map((face, index) =>
       (face.isBackground ? {[index]: face} : null)
@@ -61,18 +47,32 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     data.append("faces", JSON.stringify(faces));
     console.log(data)
 
-    fetch(backendURL + '/classify', {
+    await fetch(backendURL + '/classify', {
       method: 'POST',
       headers: { "Content-Type": "multipart/form-data" },
       body: data,
     }).then((response) => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
+      .then(async (faces) => {
+        console.log(faces);
 
-        navigation.push('Modify', {
-          image: image,
-          boxes: responseJson,
-        });
+        const fd=new FormData();
+        // @ts-ignore
+        data.append("dst_image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
+        data.append("faces", JSON.stringify(faces));
+        await fetch(backendURL + '/blend', {
+          method: 'POST',
+          headers: { "Content-Type": "multipart/form-data" },
+          body: data,
+        }).then((response) => response.json())
+          .then( (responseJson) => {
+            console.log(responseJson);
+            image.uri = 'data:image/png;base64,' + responseJson;
+            navigation.push('Modify', {
+              image: image,
+              boxes: faces,
+            });
+
+          }).catch((error) => console.log(error.message));
       }).catch((error) => console.log(error.message));
   }
 
