@@ -4,10 +4,9 @@ import {Colors} from '../constants/Colors';
 import {View} from '../components/Themed';
 import FaceBox from '../components/FaceBox';
 import {BoundaryBox} from "../constants/Face";
-import {backendURL, dWidth, ImageType, Navigation, resizeBoxes} from "../constants/utils";
+import {backendURL, dWidth, ImageType, Navigation, resizeBox, resizeBoxes} from "../constants/utils";
 import BottomToolBox from "../components/BottomToolBox";
 
-global.Buffer = require('buffer').Buffer;
 
 type Props = {
   route: Route;
@@ -30,9 +29,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
 
 
   const setBackground = (index: number, val: boolean) => {
-    const tmp = boxes;
-    tmp[index].isBackground = val;
-    setBoxes(tmp);
+    boxes[index].isBackground = val;
     serverBoxes[index].isBackground = val;
     console.log(index + " " + val);
   }
@@ -47,33 +44,36 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     data.append("faces", JSON.stringify(faces));
     console.log(data)
 
-    await fetch(backendURL + '/classify', {
+    await fetch(backendURL + '/replace', {
       method: 'POST',
       headers: { "Content-Type": "multipart/form-data" },
       body: data,
     }).then((response) => response.json())
-      .then(async (faces) => {
-        console.log(faces);
-
-        const fd=new FormData();
-        // @ts-ignore
-        data.append("dst_image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
-        data.append("faces", JSON.stringify(faces));
-        await fetch(backendURL + '/blend', {
-          method: 'POST',
-          headers: { "Content-Type": "multipart/form-data" },
-          body: data,
-        }).then((response) => response.json())
-          .then( (responseJson) => {
-            console.log(responseJson);
-            image.uri = 'data:image/png;base64,' + responseJson;
-            navigation.push('Modify', {
-              image: image,
-              boxes: faces,
-            });
-
-          }).catch((error) => console.log(error.message));
+      .then( (responseJson) => {
+        const responseFaces = responseJson["faces"];
+        console.log(responseFaces);
+        const modifyBoxes: BoundaryBox[] = [];
+        let indx = 0;
+        console.log(dWidth + ", " + imageHeight);
+        console.log(image.width + ", " + image.height );
+        for (let box in responseFaces) {
+          if( responseFaces[box] ) {
+            let obj = responseFaces[box];
+            if(!obj[indx + ""].invalid){
+              modifyBoxes.push(resizeBox( imageHeight, image, obj[indx + ""]));
+            }
+          }
+          indx += 1;
+        }
+        console.log(modifyBoxes);
+        const blendedImage = JSON.parse(JSON.stringify(image));;
+        blendedImage.uri = "data:image/png;base64," + responseJson["image"];
+        navigation.push('Modify', {
+          image: blendedImage,
+          boxes: modifyBoxes,
+        });
       }).catch((error) => console.log(error.message));
+
   }
 
   return !!image && (
@@ -84,7 +84,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
             <FaceBox key={index} inx={index} face={face} handler={setBackground}/>
         ))}
       </View>
-      <BottomToolBox right={null} middle={null} next={goToModify}/>
+      <BottomToolBox undo={null}  next={goToModify}/>
     </View>
   );
 }

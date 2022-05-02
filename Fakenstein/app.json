@@ -27,6 +27,14 @@
         "backgroundColor": "#ffffff"
       }
     },
+    "androidNavigationBar": {
+      "visible": "sticky-immersive",
+      "barStyle": "light-content",
+      "backgroundColor": "#000000"
+    },
+    "androidStatusBar": {
+      "barStyle": "light-content"
+    },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },

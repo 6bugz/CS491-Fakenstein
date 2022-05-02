@@ -4,21 +4,16 @@ import React from "react";
 import {Colors} from "../constants/Colors";
 
 type Props = {
-  right: any;
-  middle: any;
+  undo: any;
   next: any;
 }
-export default function BottomToolBox({right, middle, next}: Props) {
+export default function BottomToolBox({undo, next}: Props) {
   return (
     <View style={styles.toolboxContainer}>
       <View style={styles.toolboxBar}>
-        <Pressable onPress={() => console.log("Pressed")} style={styles.behave}
+        <Pressable onPress={() => undo()} style={styles.behave}
                    android_ripple={{borderless:true, radius: 50}}>
           <Text style={styles.text}>Undo</Text>
-        </Pressable>
-        <Pressable onPress={() => console.log("Pressed")} style={styles.behave}
-                   android_ripple={{borderless:true, radius: 50}}>
-          <Text style={styles.text}>Edit</Text>
         </Pressable>
         <Pressable onPress={() => next()} style={styles.behave}
                    android_ripple={{borderless:true, radius: 50}}>

@@ -11,14 +11,10 @@ type Props = {
 export default function PopupBox({inx, face, handler}: Props) {
   const [selected, setSelected] = useState(false);
 
-  useEffect(() => {
-    console.log(face)
-    setSelected(face.isBackground);
-  }, []);
-
   const selectBox = () => {
+    console.log("POPUP SELECTBOX");
     setSelected(!selected);
-    handler(inx, !face.isBackground);
+    handler(inx);
   };
 
   return (<TouchableOpacity onPress={selectBox} style={
@@ -29,7 +25,7 @@ export default function PopupBox({inx, face, handler}: Props) {
         height: face.height,
         width: face.width,
         top: face.top,
-        left: face.left,
+        left: face.left-205,
       }]}
   />);
 }

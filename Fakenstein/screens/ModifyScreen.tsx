@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Dimensions, Image, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
-import { Text, View } from '../components/Themed';
-import {dWidth, ImageType, Navigation, resizeBoxes} from "../constants/utils";
+import { View } from '../components/Themed';
+import {dWidth, ImageType, Navigation} from "../constants/utils";
 import BottomToolBox from "../components/BottomToolBox";
 import PopupBox from "../components/PopupBox";
 import {BoundaryBox} from "../constants/Face";
+import EditPopup from "../components/EditPopup";
 
 type Props = {
   route: Route;
@@ -15,13 +16,13 @@ type Props = {
 export default function ModifyScreen({route, navigation}: Props) {
   const image: ImageType = route.params.image;
   const imageHeight = Math.round(dWidth / image.width * image.height);
+  let popupRef = React.createRef();
 
   const [boxes, setBoxes] = useState<BoundaryBox[]>(route.params.boxes);
 
   useEffect(() => {
     console.log("Modify");
     console.log(boxes);
-    setBoxes(resizeBoxes(imageHeight, image, boxes));
   }, []);
 
   const handlePushToExport = () => {
@@ -30,18 +31,32 @@ export default function ModifyScreen({route, navigation}: Props) {
     });
   }
 
+  const show = (ind) => {
+    console.log("MODIFY SHOW");
+    popupRef.show(boxes[ind]);
+  }
+
+  const undo = () => {
+    popupRef.show();
+  }
+
+  const closePopup = () => {
+    popupRef.close();
+  }
+
 
   return  (
     !!image && (
       <View style={styles.container}>
-        <Text style={styles.text}>Select faces to modify</Text>
         <Image source={{uri: image.uri}} style={styles.image}/>
         <View style={[styles.boxContainer, {height: imageHeight}]}>
           {(boxes.length > 0) && boxes.map((face, index) => (
-            <PopupBox key={index} inx={index} face={face} handler={null}/>
+            <PopupBox key={index} inx={index} face={face} handler={show}/>
           ))}
         </View>
-        <BottomToolBox right={null} middle={null} next={handlePushToExport}/>
+        <BottomToolBox undo={undo} next={handlePushToExport}/>
+        <EditPopup ref={(target) => popupRef = target}
+                   onTouchOutside={closePopup}/>
       </View>
     )
   );
