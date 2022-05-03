@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {dHeight, dWidth} from "../constants/utils";
 import {Text} from "./Themed";
 
@@ -42,7 +42,19 @@ export default class EditPopup extends React.Component {
       top: this.state.box.top,
       width: this.state.box.width,
     }
-    this.props.handler(b);
+    this.props.apply(b);
+  }
+
+  blur = () => {
+    this.setState({show: false});
+    // send to server: blur only?
+    const b = {
+      height: this.state.box.height,
+      left: this.state.box.left,
+      top: this.state.box.top,
+      width: this.state.box.width,
+    }
+    this.props.blur(b);
   }
 
   setAge = () => {
@@ -81,26 +93,34 @@ export default class EditPopup extends React.Component {
           <View style={styles.popup}>
             <View style={{marginBottom: 30}}>
               <Text style={styles.title}>Edit Face Information</Text>
-              <Text style={styles.text}>Age Group:
+              <View style={styles.rowView}>
+                <Text style={styles.text}>Age Group:</Text>
                 <TouchableOpacity style={styles.info} onPress={this.setAge}>
                   <Text style={styles.touchText}>{age ? "Young" : "Old"} </Text>
                 </TouchableOpacity>
-              </Text>
+              </View>
               <View style={styles.separator}/>
-              <Text style={styles.text}>Gender Group:
+              <View style={styles.rowView}>
+                <Text style={styles.text}>Gender Group:</Text>
                 <TouchableOpacity style={styles.info} onPress={this.setGender}>
-                  <Text style={styles.touchText}>{this.state.gender ? "Male" : "Female"} </Text>
+                  <Text style={styles.touchText}>{gender ? "Male" : "Female"} </Text>
                 </TouchableOpacity>
-              </Text>
+              </View>
               <View style={styles.separator}/>
-              <Text style={styles.text}>Skin Color Group:
+              <View style={styles.rowView}>
+                <Text style={styles.text}>Skin Color Group:</Text>
                 <TouchableOpacity style={styles.info} onPress={this.setSkinColor}>
                   <Text style={styles.touchText}>{skinColor ? "Dark" : "Pale"} </Text>
                 </TouchableOpacity>
-              </Text>
-              <TouchableOpacity style={styles.button} onPress={this.blend}>
-                <Text style={styles.buttonText}>APPLY CHANGES</Text>
-              </TouchableOpacity>
+              </View>
+              <View style={styles.rowView}>
+                <TouchableOpacity style={styles.button} onPress={this.blend}>
+                  <Text style={styles.buttonText}>BLUR</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={this.blend}>
+                  <Text style={styles.buttonText}>APPLY CHANGES</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
@@ -140,19 +160,27 @@ const styles = StyleSheet.create({
     height: 1,
   },
   info : {
-    width: dWidth * 0.7,
-    alignItems:'flex-end',
+    width: dWidth * 0.5,
+    alignItems:'center',
+    margin: 10,
   },
   touchText: {
     color:'#F92660',
     fontSize: 18,
     fontWeight: "600",
   },
+  rowView: {
+    alignItems: "stretch",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   button: {
-    width: "100%",
+    width: "45%",
     backgroundColor:'#F92660',
     borderRadius: 20,
     alignItems: "center",
+    marginHorizontal: 10,
+    marginTop: 15,
   },
   buttonText: {
     color: "white",

@@ -1,18 +1,19 @@
 import { StyleSheet, TouchableOpacity, Image } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 import {Colors} from '../constants/Colors';
 import {backendURL, dWidth} from "../constants/utils";
 import * as ImagePicker from "expo-image-picker";
 import {ImageInfo} from "expo-image-picker";
+import LoadingScreen from "./LoadingScreen";
+import { Entypo } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 
 export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakenstein'>) {
+  const [loading, setLoading] = useState(false);
 
-  const handleGoToAbout = () => {
-    navigation.push('NotFound');
-  }
 
   const toServer = async (image: ImageInfo) => {
     const data=new FormData();
@@ -26,12 +27,13 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
     }).then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
-
+        setLoading(false);
         navigation.push('SelectFace', {
           image: image,
           boxes: responseJson,
         });
       }).catch((error) => console.log(error.message));
+    setLoading(false);
   }
 
   const pickImage = async () => {
@@ -48,6 +50,7 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
     if (response.cancelled) {
       console.log('User cancelled image picker');
     } else {
+      // setLoading(true);
       // await toServer(response);
       navigation.push('SelectFace', {
         image: response,
@@ -74,32 +77,31 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
     if (response.cancelled) {
       console.log('User cancelled image picker');
     } else {
+      setLoading(true);
       await toServer(response);
     }
   };
 
-  return (
+  return loading ? <LoadingScreen/>
+    : (
     <View style={styles.container}>
       <Text style={styles.title}>FAKENSTEIN</Text>
       <View style={styles.infoContainer}>
         <Image style={styles.logo} source={require('../assets/images/logo.png')} />
         <TouchableOpacity onPress={pickImage} style={styles.button}>
+          <Entypo name="images" size={24} color={Colors.dark.text} />
           <Text style={styles.infoText}>
-            OPEN GALLERY
+            GALLERY
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={openCamera} style={styles.button}>
+          <FontAwesome5 name="camera" size={24} color={Colors.dark.text} />
           <Text style={styles.infoText}>
-            OPEN CAMERA
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleGoToAbout} style={styles.button}>
-          <Text style={styles.infoText}>
-            ABOUT US
+            CAMERA
           </Text>
         </TouchableOpacity>
       </View>
-  </View>
+    </View>
   );
 }
 
@@ -122,12 +124,11 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 20,
-    paddingVertical: 8,
+    padding: 8,
     textAlign: 'center',
     color: Colors.dark.text,
   },
   logo: {
-    alignItems: 'center',
     width: 400,
     height: 400,
   },
@@ -136,6 +137,8 @@ const styles = StyleSheet.create({
     backgroundColor:'#5F6361',
     borderRadius: 20,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
     margin: 20,
   },
 });

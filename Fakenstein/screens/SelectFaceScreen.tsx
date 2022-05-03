@@ -6,6 +6,7 @@ import FaceBox from '../components/FaceBox';
 import {BoundaryBox} from "../constants/Face";
 import {backendURL, dWidth, ImageType, Navigation, resizeBox, resizeBoxes} from "../constants/utils";
 import BottomToolBox from "../components/BottomToolBox";
+import LoadingScreen from "./LoadingScreen";
 
 type Props = {
   route: Route;
@@ -19,6 +20,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
 
   const [boxes, setBoxes] = useState<BoundaryBox[]>([]);
   const [serverBoxes] = useState<BoundaryBox[]>(route.params.boxes);
+  const [loading, setLoading] = useState(false);
 
   useEffect( () => {
     console.log(dWidth + ", " + imageHeight);
@@ -74,23 +76,34 @@ export default function SelectFaceScreen({route, navigation}: Props) {
       }).catch((error) => console.log(error.message));
   }
 
-  const handleFakeNavigation = () => {
+  function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+
+  const handleFakeNavigation = async () => {
+    setLoading(true);
+    await sleep(3000);
+    setLoading(false);
     navigation.push('Modify', {
       image: image,
       boxes: boxes,
     });
   }
 
-  return !!image && (
+  return loading ? <LoadingScreen/> : (!!image && (
     <View style={styles.container}>
+      <View  style={[styles.container, styles.imageContainer]}>
         <Image source={{uri: image.uri}} style={styles.image}/>
         <View style={[styles.boxContainer, {height: imageHeight}]}>
           {(boxes.length > 0) && boxes.map((face, index) => (
             <FaceBox key={index} inx={index} face={face} handler={setBackground}/>
           ))}
         </View>
-      <BottomToolBox undo={null}  next={handleFakeNavigation}/>
-    </View>
+      </View>
+      <BottomToolBox undoF={null} undoT={""} nextF={handleFakeNavigation} nextT={"Replace Yellow Boxes"}/>
+    </View>)
   );
 }
 
@@ -100,6 +113,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.dark.background,
+  },
+  imageContainer: {
+    marginBottom: 50,
   },
   image: {
     flex: 1,

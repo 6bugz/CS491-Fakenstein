@@ -2,12 +2,6 @@ const tintColorLight = '#2f95dc';
 const tintColorDark = '#91BCB3';
 
 
-export const Box = {
-    transparent: 'rgba(52, 52, 52, 0)',
-    border: 'red',
-    selected: 'rgba(52, 52, 52, 0.8)',
-}
-
 export const Colors = {
     light: {
         text: '#000',
@@ -18,7 +12,7 @@ export const Colors = {
       },
     dark: {
         text: '#91BCB3',
-        background: '#000',
+        background: '#3B3B3B',
         tint: tintColorDark,
         tabIconDefault: '#ccc',
         tabIconSelected: tintColorDark,

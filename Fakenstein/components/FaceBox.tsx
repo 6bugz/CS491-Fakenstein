@@ -32,7 +32,7 @@ export default function FaceBox({inx, face, handler}: Props) {
           left: face.left,
         }]}
       >
-      <Text>{selected ? "Background" : "Foreground"}</Text>
+      <Text adjustsFontSizeToFit={true} numberOfLines={1} >{selected ? "Background" : "Foreground"}</Text>
     </TouchableOpacity>);
 }
 

@@ -4,6 +4,7 @@
  *
  */
 import { FontAwesome } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
@@ -47,7 +48,7 @@ function RootNavigator() {
       <Stack.Screen name="Root" component={WelcomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
       <Stack.Screen name="Tutorial" component={TutorialScreen} />
-      <Stack.Screen name="SelectFace" component={SelectFaceScreen} options={({ navigation }: RootTabScreenProps<'Gallery'>) => (
+      <Stack.Screen name="SelectFace" component={SelectFaceScreen} options={({ navigation }) => (
         {
           title: "Select Background Images",
           headerRight: () => (
@@ -60,12 +61,12 @@ function RootNavigator() {
                 name="info-circle"
                 size={25}
                 color={Colors[colorScheme].tabIconDefault}
-                style={{ marginRight: 15 }}
+                style={{ marginRight: 10 }}
               />
             </Pressable>
           ),
         })}/>
-      <Stack.Screen name="Modify" component={ModifyScreen} options={({ navigation }: RootTabScreenProps<'Gallery'>) => (
+      <Stack.Screen name="Modify" component={ModifyScreen} options={({ navigation }) => (
         {
           title: "Modify Generated Faces",
           headerRight: () => (
@@ -78,14 +79,24 @@ function RootNavigator() {
                 name="info-circle"
                 size={25}
                 color={Colors[colorScheme].tabIconDefault}
-                style={{ marginRight: 15 }}
+                style={{ marginRight: 10 }}
               />
             </Pressable>
           ),
         })}/>
-      <Stack.Screen name="Export" component={ExportScreen} options={{
-        title: 'Export Image',
-      }}/>
+      <Stack.Screen name="Export" component={ExportScreen} options={({ navigation }) => (
+        {
+          title: "Export Image",
+          headerRight: () => (
+            <Pressable
+              onPress={() => navigation.popToTop()}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <AntDesign name="home" size={24} color="white" style={{ marginRight: 10 }}/>
+            </Pressable>
+          ),
+        })}/>
     </Stack.Navigator>
   );
 }

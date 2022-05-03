@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   boxSelected: {
-    borderColor: 'blue',
-    backgroundColor: 'blue',
+    borderColor: 'lightblue',
+    backgroundColor: 'lightblue',
     opacity: 0.5,
   },
 });

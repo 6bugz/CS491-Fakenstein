@@ -1,24 +1,24 @@
 import {Text, View} from "./Themed";
-import {Pressable, StyleSheet} from "react-native";
+import {Pressable, StyleSheet, TouchableOpacity} from "react-native";
 import React from "react";
 import {Colors} from "../constants/Colors";
 
 type Props = {
-  undo: any;
-  next: any;
+  undoF: any;
+  nextF: any;
+  undoT: string;
+  nextT: string;
 }
-export default function BottomToolBox({undo, next}: Props) {
+export default function BottomToolBox({undoF,undoT,nextF, nextT}: Props) {
   return (
     <View style={styles.toolboxContainer}>
       <View style={styles.toolboxBar}>
-        {!!undo && <Pressable onPress={() => undo()} style={styles.behave}
-                    android_ripple={{borderless: true, radius: 50}}>
-          <Text style={styles.text}>Undo</Text>
-        </Pressable>}
-        {!!next && <Pressable onPress={() => next()} style={styles.behave}
-                    android_ripple={{borderless: true, radius: 50}}>
-          <Text style={styles.text}>Next</Text>
-        </Pressable>}
+        {!!undoF && <TouchableOpacity onPress={() => undoF()} style={styles.behave}>
+          <Text style={styles.text}>{undoT}</Text>
+        </TouchableOpacity>}
+        {!!nextF && <TouchableOpacity onPress={() => nextF()} style={styles.behave}>
+          <Text style={styles.text}>{nextT}</Text>
+        </TouchableOpacity>}
       </View>
     </View>
   );
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   toolboxContainer: {
     position: 'absolute',
     alignItems: "center",
-    bottom: 20,
+    bottom: 40,
     backgroundColor: "transparent",
   },
   toolboxBar: {
@@ -46,5 +46,7 @@ const styles = StyleSheet.create({
   },
   behave: {
     padding: 10,
+    alignItems: "center",
+    flex: 1,
   },
 });

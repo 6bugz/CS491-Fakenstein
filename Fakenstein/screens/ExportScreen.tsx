@@ -1,10 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions, Image,  Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { View } from '../components/Themed';
 import {ImageType} from "../constants/utils";
 import * as MediaLibrary from 'expo-media-library';
 import BottomToolBox from "../components/BottomToolBox";
+import MessagePopup from "../components/MessagePopup";
 
 type Props = {
   route: Route;
@@ -12,6 +13,7 @@ type Props = {
 
 export default function ExportScreen({route}: Props) {
   const image: ImageType = (route.params.image);
+  const [visible, setVisible] = React.useState(false);
 
   useEffect(() => {
     console.log("Export");
@@ -20,15 +22,18 @@ export default function ExportScreen({route}: Props) {
   const download = async () => {
     // direct to welcome page after informing the user
     await MediaLibrary.saveToLibraryAsync(image.uri)
-      .then((res) => console.log("SAVED"))
+      .then((res) => setVisible(true))
       .catch((err) => console.log(err.message));
   }
 
   return  (
     !!image && (
       <View style={styles.container}>
+        <MessagePopup visible={visible} setVisible={setVisible}
+                      success={true}
+                      message={"Image saved to gallery."} />
         <Image source={{uri: image.uri}} style={styles.image}/>
-        <BottomToolBox undo={null} next={download}/>
+        <BottomToolBox undoF={null} undoT={""} nextF={download} nextT={"Download Image"}/>
       </View>
     )
   );

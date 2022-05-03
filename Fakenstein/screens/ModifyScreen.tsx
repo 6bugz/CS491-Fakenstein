@@ -7,6 +7,7 @@ import BottomToolBox from "../components/BottomToolBox";
 import {BoundaryBox} from "../constants/Face";
 import PopupBox from "../components/PopupBox";
 import EditPopup from "../components/EditPopup";
+import LoadingScreen from "./LoadingScreen";
 
 type Props = {
   route: Route;
@@ -20,6 +21,8 @@ export default function ModifyScreen({route, navigation}: Props) {
 
   const [imageStack, setImageStack] = useState<ImageType[]>([image]);
   const [boxStack, setBoxStack] = useState<BoundaryBox[][]>([boxes]);
+
+  const [loading, setLoading] = useState(false);
 
   let popupRef = React.createRef();
   const imageHeight = Math.round(dWidth / image.width * image.height);
@@ -83,7 +86,34 @@ export default function ModifyScreen({route, navigation}: Props) {
      */
   }
 
-  return  (
+  const blur = (box: BoundaryBox) => {
+    console.log("BLUR request.");
+    const newBoxes = JSON.parse(JSON.stringify(boxes));
+    newBoxes[index] = box;
+    setBoxStack([... boxStack, newBoxes]);
+    setBoxes(newBoxes);
+    /*
+    const data=new FormData();
+    // @ts-ignore
+    data.append("image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
+    data.append("face", JSON.stringify(box));
+    console.log(data)
+
+    await fetch(backendURL + '/blur', {
+      method: 'POST',
+      headers: { "Content-Type": "multipart/form-data" },
+      body: data,
+    }).then((response) => response.json())
+      .then( (responseJson) => {
+        const blendedImage = JSON.parse(JSON.stringify(image));;
+        blendedImage.uri = "data:image/png;base64," + responseJson["image"];
+        setImage(blendedImage);
+        setImageStack([... imageStack, blendedImage]);
+      }).catch((error) => console.log(error.message));
+     */
+  }
+
+  return  loading ? <LoadingScreen/> : (
     !!image && (
       <View style={styles.container}>
         <Image source={{uri: image.uri}} style={styles.image}/>
@@ -92,9 +122,9 @@ export default function ModifyScreen({route, navigation}: Props) {
             <PopupBox key={index} inx={index} face={face} open={showPopup}/>
           ))}
         </View>
-        <BottomToolBox undo={undo} next={handlePushToExport}/>
+        <BottomToolBox undoF={undo} undoT={"Undo"} nextF={handlePushToExport} nextT={"Done"}/>
         <EditPopup ref={(target) => popupRef = target}
-                   onTouchOutside={closePopup} handler={update}/>
+                   onTouchOutside={closePopup} blur={blur} apply={update}/>
       </View>
     )
   );
