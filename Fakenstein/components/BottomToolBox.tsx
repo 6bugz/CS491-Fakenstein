@@ -11,14 +11,14 @@ export default function BottomToolBox({undo, next}: Props) {
   return (
     <View style={styles.toolboxContainer}>
       <View style={styles.toolboxBar}>
-        <Pressable onPress={() => undo()} style={styles.behave}
-                   android_ripple={{borderless:true, radius: 50}}>
+        {!!undo && <Pressable onPress={() => undo()} style={styles.behave}
+                    android_ripple={{borderless: true, radius: 50}}>
           <Text style={styles.text}>Undo</Text>
-        </Pressable>
-        <Pressable onPress={() => next()} style={styles.behave}
-                   android_ripple={{borderless:true, radius: 50}}>
+        </Pressable>}
+        {!!next && <Pressable onPress={() => next()} style={styles.behave}
+                    android_ripple={{borderless: true, radius: 50}}>
           <Text style={styles.text}>Next</Text>
-        </Pressable>
+        </Pressable>}
       </View>
     </View>
   );

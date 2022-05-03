@@ -15,11 +15,11 @@ type Props = {
 
 export default function ModifyScreen({route, navigation}: Props) {
   const [image, setImage] = useState<ImageType>(route.params.image);
-  let [boxes, setBoxes] = useState<BoundaryBox[]>(route.params.boxes);
+  const [boxes, setBoxes] = useState<BoundaryBox[]>(route.params.boxes);
   const [index, setIndex] = useState(0);
 
-  let imageStack = useState<ImageType[]>([image]);
-  let boxStack = useState<BoundaryBox[][]>([boxes]);
+  const [imageStack, setImageStack] = useState<ImageType[]>([image]);
+  const [boxStack, setBoxStack] = useState<BoundaryBox[][]>([boxes]);
 
   let popupRef = React.createRef();
   const imageHeight = Math.round(dWidth / image.width * image.height);
@@ -36,20 +36,19 @@ export default function ModifyScreen({route, navigation}: Props) {
     });
   }
 
-  const show = (ind) => {
+  const showPopup = (ind) => {
     setIndex(ind);
     console.log("MODIFY SHOW");
     popupRef.show(boxes[ind]);
   }
 
   const undo = () => {
-    console.log(boxStack);
+    console.log("UNDO ");
     if(boxStack.length > 1) {
       //imageStack.pop();
       boxStack.pop();
-
       //setImage(imageStack[imageStack.length - 1]);
-      boxes = boxStack[boxStack.length - 1];
+      setBoxes(boxStack[boxStack.length - 1]);
     }
   }
 
@@ -61,9 +60,8 @@ export default function ModifyScreen({route, navigation}: Props) {
     console.log("Blend request.");
     const newBoxes = JSON.parse(JSON.stringify(boxes));
     newBoxes[index] = box;
-    boxStack.push(newBoxes);
-    boxes = newBoxes;
-    console.log(boxStack);
+    setBoxStack([... boxStack, newBoxes]);
+    setBoxes(newBoxes);
     /*
     const data=new FormData();
     // @ts-ignore
@@ -80,7 +78,7 @@ export default function ModifyScreen({route, navigation}: Props) {
         const blendedImage = JSON.parse(JSON.stringify(image));;
         blendedImage.uri = "data:image/png;base64," + responseJson["image"];
         setImage(blendedImage);
-        imageStack.push(blendedImage);
+        setImageStack([... imageStack, blendedImage]);
       }).catch((error) => console.log(error.message));
      */
   }
@@ -91,7 +89,7 @@ export default function ModifyScreen({route, navigation}: Props) {
         <Image source={{uri: image.uri}} style={styles.image}/>
         <View style={[styles.boxContainer, {height: imageHeight}]}>
           {(boxes.length > 0) && boxes.map((face, index) => (
-            <PopupBox key={index} inx={index} face={face} handler={show}/>
+            <PopupBox key={index} inx={index} face={face} open={showPopup}/>
           ))}
         </View>
         <BottomToolBox undo={undo} next={handlePushToExport}/>

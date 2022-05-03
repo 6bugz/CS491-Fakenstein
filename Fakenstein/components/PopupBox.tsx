@@ -5,15 +5,15 @@ import {BoundaryBox} from "../constants/Face";
 type Props = {
   inx: number;
   face: BoundaryBox;
-  handler: any;
+  open: any;
 }
 
-export default function PopupBox({inx, face, handler}: Props) {
+export default function PopupBox({inx, face, open}: Props) {
   const [selected, setSelected] = useState(false);
 
   const openEdit = () => {
     setSelected(!selected);
-    handler(inx);
+    if(!selected) open(inx);
   };
 
   return (

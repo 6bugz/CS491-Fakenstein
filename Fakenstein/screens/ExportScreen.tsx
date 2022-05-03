@@ -1,8 +1,10 @@
 import React, {useEffect} from 'react';
 import {Dimensions, Image,  Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
-import { Text, View } from '../components/Themed';
+import { View } from '../components/Themed';
 import {ImageType} from "../constants/utils";
+import * as MediaLibrary from 'expo-media-library';
+import BottomToolBox from "../components/BottomToolBox";
 
 type Props = {
   route: Route;
@@ -15,12 +17,18 @@ export default function ExportScreen({route}: Props) {
     console.log("Export");
   }, []);
 
+  const download = async () => {
+    // direct to welcome page after informing the user
+    await MediaLibrary.saveToLibraryAsync(image.uri)
+      .then((res) => console.log("SAVED"))
+      .catch((err) => console.log(err.message));
+  }
 
   return  (
     !!image && (
       <View style={styles.container}>
-        <Text style={styles.text}>Export Your Image</Text>
         <Image source={{uri: image.uri}} style={styles.image}/>
+        <BottomToolBox undo={null} next={download}/>
       </View>
     )
   );

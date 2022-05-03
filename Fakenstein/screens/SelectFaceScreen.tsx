@@ -7,7 +7,6 @@ import {BoundaryBox} from "../constants/Face";
 import {backendURL, dWidth, ImageType, Navigation, resizeBox, resizeBoxes} from "../constants/utils";
 import BottomToolBox from "../components/BottomToolBox";
 
-
 type Props = {
   route: Route;
   navigation: Navigation;
@@ -84,12 +83,12 @@ export default function SelectFaceScreen({route, navigation}: Props) {
 
   return !!image && (
     <View style={styles.container}>
-      <Image source={{uri: image.uri}} style={styles.image}/>
-      <View style={[styles.boxContainer, {height: imageHeight}]}>
-        {(boxes.length > 0) && boxes.map((face, index) => (
+        <Image source={{uri: image.uri}} style={styles.image}/>
+        <View style={[styles.boxContainer, {height: imageHeight}]}>
+          {(boxes.length > 0) && boxes.map((face, index) => (
             <FaceBox key={index} inx={index} face={face} handler={setBackground}/>
-        ))}
-      </View>
+          ))}
+        </View>
       <BottomToolBox undo={null}  next={handleFakeNavigation}/>
     </View>
   );
