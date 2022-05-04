@@ -42,19 +42,22 @@ export default class EditPopup extends React.Component {
       top: this.state.box.top,
       width: this.state.box.width,
     }
-    this.props.apply(b);
+    this.props.update(b, "blend");
   }
 
   blur = () => {
     this.setState({show: false});
     // send to server: blur only?
     const b = {
+      age: this.state.age,
+      gender: this.state.gender,
+      skinColor: this.state.skinColor,
       height: this.state.box.height,
       left: this.state.box.left,
       top: this.state.box.top,
       width: this.state.box.width,
     }
-    this.props.blur(b);
+    this.props.update(b, "blur");
   }
 
   setAge = () => {
@@ -114,7 +117,7 @@ export default class EditPopup extends React.Component {
                 </TouchableOpacity>
               </View>
               <View style={styles.rowView}>
-                <TouchableOpacity style={styles.button} onPress={this.blend}>
+                <TouchableOpacity style={styles.button} onPress={this.blur}>
                   <Text style={styles.buttonText}>BLUR</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={this.blend}>

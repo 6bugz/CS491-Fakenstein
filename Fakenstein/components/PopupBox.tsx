@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {BoundaryBox} from "../constants/Face";
+import {Colors} from "../constants/Colors";
 
 type Props = {
   inx: number;
@@ -40,12 +41,12 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   boxBackground: {
-    borderColor: 'yellow',
+    borderColor: Colors["dark"].pinkishWhite,
     opacity: 0.5,
   },
   boxSelected: {
-    borderColor: 'lightblue',
-    backgroundColor: 'lightblue',
+    borderColor: Colors["dark"].button,
+    backgroundColor: Colors["dark"].button,
     opacity: 0.5,
   },
 });

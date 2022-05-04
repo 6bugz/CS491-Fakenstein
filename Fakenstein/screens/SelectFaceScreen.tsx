@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, Route, StyleSheet} from 'react-native';
+import {Image, Platform, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import {View} from '../components/Themed';
 import FaceBox from '../components/FaceBox';
@@ -7,6 +7,7 @@ import {BoundaryBox} from "../constants/Face";
 import {backendURL, dWidth, ImageType, Navigation, resizeBox, resizeBoxes} from "../constants/utils";
 import BottomToolBox from "../components/BottomToolBox";
 import LoadingScreen from "./LoadingScreen";
+import MessagePopup from "../components/MessagePopup";
 
 type Props = {
   route: Route;
@@ -21,6 +22,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
   const [boxes, setBoxes] = useState<BoundaryBox[]>([]);
   const [serverBoxes] = useState<BoundaryBox[]>(route.params.boxes);
   const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = React.useState(false);
 
   useEffect( () => {
     console.log(dWidth + ", " + imageHeight);
@@ -36,6 +38,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
   }
 
   const goToModify = async () => {
+    setLoading(true);
     const data=new FormData();
     const faces = serverBoxes.map((face, index) =>
       (face.isBackground ? {[index]: face} : null)
@@ -69,11 +72,16 @@ export default function SelectFaceScreen({route, navigation}: Props) {
         console.log(modifyBoxes);
         const blendedImage = JSON.parse(JSON.stringify(image));;
         blendedImage.uri = "data:image/png;base64," + responseJson["image"];
+        setLoading(false);
         navigation.push('Modify', {
           image: blendedImage,
           boxes: modifyBoxes,
         });
-      }).catch((error) => console.log(error.message));
+      }).catch((error) => {
+          console.log(error.message);
+          setVisible(true);
+        });
+    setLoading(false);
   }
 
   function sleep(ms) {
@@ -92,6 +100,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     });
   }
 
+
   return loading ? <LoadingScreen/> : (!!image && (
     <View style={styles.container}>
       <View  style={[styles.container, styles.imageContainer]}>
@@ -102,7 +111,11 @@ export default function SelectFaceScreen({route, navigation}: Props) {
           ))}
         </View>
       </View>
-      <BottomToolBox undoF={null} undoT={""} nextF={handleFakeNavigation} nextT={"Replace Yellow Boxes"}/>
+      <MessagePopup visible={visible} setVisible={setVisible}
+                    success={false}
+                    message={"We are having problems identifying a person in the selected boxes. " +
+                        "Please remove boxes that do not contain a human face."} />
+      <BottomToolBox undoF={null} undoT={""} nextF={(Platform.OS === 'web') ? handleFakeNavigation : goToModify} nextT={"Replace"}/>
     </View>)
   );
 }

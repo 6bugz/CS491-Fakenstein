@@ -46,8 +46,19 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Root" component={WelcomeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Screen name="Tutorial" component={TutorialScreen} />
+      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{
+        title: 'Oops!',
+        headerStyle: {
+          backgroundColor: Colors[colorScheme].tabBackground,
+        },
+        headerTintColor: Colors[colorScheme].pinkishWhite,
+      }} />
+      <Stack.Screen name="Tutorial" component={TutorialScreen} options={{
+        headerStyle: {
+          backgroundColor: Colors[colorScheme].tabBackground,
+        },
+        headerTintColor: Colors[colorScheme].pinkishWhite,
+      }}/>
       <Stack.Screen name="SelectFace" component={SelectFaceScreen} options={({ navigation }) => (
         {
           title: "Select Background Images",
@@ -60,11 +71,15 @@ function RootNavigator() {
               <FontAwesome
                 name="info-circle"
                 size={25}
-                color={Colors[colorScheme].tabIconDefault}
+                color={Colors[colorScheme].pinkishWhite}
                 style={{ marginRight: 10 }}
               />
             </Pressable>
           ),
+          headerStyle: {
+            backgroundColor: Colors[colorScheme].tabBackground,
+          },
+          headerTintColor: Colors[colorScheme].pinkishWhite,
         })}/>
       <Stack.Screen name="Modify" component={ModifyScreen} options={({ navigation }) => (
         {
@@ -78,11 +93,15 @@ function RootNavigator() {
               <FontAwesome
                 name="info-circle"
                 size={25}
-                color={Colors[colorScheme].tabIconDefault}
+                color={Colors[colorScheme].pinkishWhite}
                 style={{ marginRight: 10 }}
               />
             </Pressable>
           ),
+          headerStyle: {
+            backgroundColor: Colors[colorScheme].tabBackground,
+          },
+          headerTintColor: Colors[colorScheme].pinkishWhite,
         })}/>
       <Stack.Screen name="Export" component={ExportScreen} options={({ navigation }) => (
         {
@@ -93,9 +112,13 @@ function RootNavigator() {
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
               })}>
-              <AntDesign name="home" size={24} color="white" style={{ marginRight: 10 }}/>
+              <AntDesign name="home" size={24} color={Colors[colorScheme].pinkishWhite} style={{ marginRight: 10 }}/>
             </Pressable>
           ),
+          headerStyle: {
+            backgroundColor: Colors[colorScheme].tabBackground,
+          },
+          headerTintColor: Colors[colorScheme].pinkishWhite,
         })}/>
     </Stack.Navigator>
   );

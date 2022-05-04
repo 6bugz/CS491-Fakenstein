@@ -24,7 +24,7 @@ export default function FaceBox({inx, face, handler}: Props) {
     return (<TouchableOpacity onPress={selectBox} style={
       [
         styles.box,
-        selected ? styles.boxBackground : styles.boxForeground,
+        selected && styles.boxBackground ,
         {
           height: face.height,
           width: face.width,
@@ -32,7 +32,6 @@ export default function FaceBox({inx, face, handler}: Props) {
           left: face.left,
         }]}
       >
-      <Text adjustsFontSizeToFit={true} numberOfLines={1} >{selected ? "Background" : "Foreground"}</Text>
     </TouchableOpacity>);
 }
 
@@ -42,20 +41,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 4,
     opacity: 0.3,
-    alignItems: "flex-start",
-  },
-  boxForeground: {
-    borderColor: 'green',
-    backgroundColor: 'green',
+    borderColor: '#F92660',
   },
   boxBackground: {
-    borderColor: 'yellow',
-    backgroundColor: 'yellow',
-    opacity: 0.5,
-  },
-  boxSelected: {
-    borderColor: 'blue',
-    backgroundColor: 'blue',
+    backgroundColor: '#F92660',
     opacity: 0.5,
   },
 });

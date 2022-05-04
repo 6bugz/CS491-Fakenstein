@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Image, Route, StyleSheet} from 'react-native';
+import {Image, Platform, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { View } from '../components/Themed';
-import {dWidth, ImageType, Navigation} from "../constants/utils";
+import {backendURL, dWidth, ImageType, maximizeBox, Navigation} from "../constants/utils";
 import BottomToolBox from "../components/BottomToolBox";
 import {BoundaryBox} from "../constants/Face";
 import PopupBox from "../components/PopupBox";
@@ -48,9 +48,11 @@ export default function ModifyScreen({route, navigation}: Props) {
   const undo = () => {
     console.log("UNDO ");
     if(boxStack.length > 1) {
-      //imageStack.pop();
+      if(Platform.OS === 'android') {
+        imageStack.pop();
+        setImage(imageStack[imageStack.length - 1]);
+      }
       boxStack.pop();
-      //setImage(imageStack[imageStack.length - 1]);
       setBoxes(boxStack[boxStack.length - 1]);
     }
   }
@@ -59,59 +61,36 @@ export default function ModifyScreen({route, navigation}: Props) {
     popupRef.close();
   }
 
-  const update = (box: BoundaryBox) => {
-    console.log("Blend request.");
+  const update = async (box: BoundaryBox, route: string) => {
+    console.log(route + " request.");
+    if(route == 'blend')
+      setLoading(true);
+
     const newBoxes = JSON.parse(JSON.stringify(boxes));
     newBoxes[index] = box;
     setBoxStack([... boxStack, newBoxes]);
     setBoxes(newBoxes);
-    /*
-    const data=new FormData();
-    // @ts-ignore
-    data.append("image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
-    data.append("face", JSON.stringify(box));
-    console.log(data)
+    if(Platform.OS === 'android') {
+      const data = new FormData();
+      // @ts-ignore
+      data.append("image", image.uri.slice(22));
+      data.append("faces", JSON.stringify(maximizeBox(imageHeight, image, box)));
 
-    await fetch(backendURL + '/blend', {
-      method: 'POST',
-      headers: { "Content-Type": "multipart/form-data" },
-      body: data,
-    }).then((response) => response.json())
-      .then( (responseJson) => {
-        const blendedImage = JSON.parse(JSON.stringify(image));;
-        blendedImage.uri = "data:image/png;base64," + responseJson["image"];
-        setImage(blendedImage);
-        setImageStack([... imageStack, blendedImage]);
-      }).catch((error) => console.log(error.message));
-     */
+      await fetch(backendURL + '/' + route, {
+        method: 'POST',
+        headers: { "Content-Type": "multipart/form-data" },
+        body: data,
+      }).then((response) => response.json())
+          .then( (responseJson) => {
+            const blendedImage = JSON.parse(JSON.stringify(image));
+            blendedImage.uri = "data:image/png;base64," + responseJson["image"];
+            setImage(blendedImage);
+            setImageStack([... imageStack, blendedImage]);
+          }).catch((error) => console.log(error.message));
+    }
+    setLoading(false);
   }
 
-  const blur = (box: BoundaryBox) => {
-    console.log("BLUR request.");
-    const newBoxes = JSON.parse(JSON.stringify(boxes));
-    newBoxes[index] = box;
-    setBoxStack([... boxStack, newBoxes]);
-    setBoxes(newBoxes);
-    /*
-    const data=new FormData();
-    // @ts-ignore
-    data.append("image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
-    data.append("face", JSON.stringify(box));
-    console.log(data)
-
-    await fetch(backendURL + '/blur', {
-      method: 'POST',
-      headers: { "Content-Type": "multipart/form-data" },
-      body: data,
-    }).then((response) => response.json())
-      .then( (responseJson) => {
-        const blendedImage = JSON.parse(JSON.stringify(image));;
-        blendedImage.uri = "data:image/png;base64," + responseJson["image"];
-        setImage(blendedImage);
-        setImageStack([... imageStack, blendedImage]);
-      }).catch((error) => console.log(error.message));
-     */
-  }
 
   return  loading ? <LoadingScreen/> : (
     !!image && (
@@ -124,7 +103,7 @@ export default function ModifyScreen({route, navigation}: Props) {
         </View>
         <BottomToolBox undoF={undo} undoT={"Undo"} nextF={handlePushToExport} nextT={"Done"}/>
         <EditPopup ref={(target) => popupRef = target}
-                   onTouchOutside={closePopup} blur={blur} apply={update}/>
+                   onTouchOutside={closePopup} update={update}/>
       </View>
     )
   );

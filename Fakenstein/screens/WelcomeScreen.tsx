@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {StyleSheet, TouchableOpacity, Image, Platform} from 'react-native';
 import React, {useState} from 'react';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
@@ -9,11 +9,13 @@ import {ImageInfo} from "expo-image-picker";
 import LoadingScreen from "./LoadingScreen";
 import { Entypo } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+import MessagePopup from "../components/MessagePopup";
 
 
 export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakenstein'>) {
   const [loading, setLoading] = useState(false);
-
+  const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState('');
 
   const toServer = async (image: ImageInfo) => {
     const data=new FormData();
@@ -27,12 +29,22 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
     }).then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
-        setLoading(false);
-        navigation.push('SelectFace', {
-          image: image,
-          boxes: responseJson,
+        if(responseJson["message"] == 'successful') {
+          setLoading(false);
+          navigation.push('SelectFace', {
+            image: image,
+            boxes: responseJson['boxes'],
+          });
+        }
+        else {
+          setVisible(true);
+          setMessage('We could not find any face in this picture.');
+        }
+      }).catch((error) => {
+          console.log(error.message);
+          setVisible(true);
+          setMessage('We are having problems connecting to our server. Please try again later.');
         });
-      }).catch((error) => console.log(error.message));
     setLoading(false);
   }
 
@@ -50,16 +62,20 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
     if (response.cancelled) {
       console.log('User cancelled image picker');
     } else {
-      // setLoading(true);
-      // await toServer(response);
-      navigation.push('SelectFace', {
-        image: response,
-        boxes: [{"age": false,"gender": false,"height": 222,"invalid": false,
-          "isBackground": true,"left": 268,"skinColor": false,"top": 209,"width": 152,
-        }, {"age": false,"gender": false,"height": 222,"invalid": false,"isBackground": true,
-          "left": 478,"skinColor": false,"top": 209,"width": 152,
-        }],
-      });
+      if (Platform.OS === 'web') {
+        console.log(response);
+        navigation.push('SelectFace', {
+          image: response,
+          boxes: [{"age": false,"gender": false,"height": 222,"invalid": false,
+            "isBackground": true,"left": 268,"skinColor": false,"top": 209,"width": 152,
+          }, {"age": false,"gender": false,"height": 222,"invalid": false,"isBackground": true,
+            "left": 478,"skinColor": false,"top": 209,"width": 152,
+          }],
+        });
+      } else {
+        setLoading(true);
+        await toServer(response);
+      }
     }
   };
 
@@ -85,22 +101,25 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
   return loading ? <LoadingScreen/>
     : (
     <View style={styles.container}>
-      <Text style={styles.title}>FAKENSTEIN</Text>
-      <View style={styles.infoContainer}>
-        <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-        <TouchableOpacity onPress={pickImage} style={styles.button}>
-          <Entypo name="images" size={24} color={Colors.dark.text} />
-          <Text style={styles.infoText}>
-            GALLERY
-          </Text>
-        </TouchableOpacity>
+      <MessagePopup visible={visible} setVisible={setVisible}
+                    success={false}
+                    message={message} />
+      <Image style={styles.logoImage} source={require('../assets/images/LOGO-NAME.png')} />
+      <Image style={styles.logo} source={require('../assets/images/logo.png')} />
+      <TouchableOpacity onPress={pickImage} style={styles.button}>
+        <Entypo name="images" size={24} color={Colors.dark.text} />
+        <Text style={styles.infoText}>
+          GALLERY
+        </Text>
+      </TouchableOpacity>
+      {(Platform.OS === 'android') &&
         <TouchableOpacity onPress={openCamera} style={styles.button}>
-          <FontAwesome5 name="camera" size={24} color={Colors.dark.text} />
+          <FontAwesome5 name="camera" size={24} color={Colors.dark.text}/>
           <Text style={styles.infoText}>
             CAMERA
           </Text>
         </TouchableOpacity>
-      </View>
+      }
     </View>
   );
 }
@@ -117,11 +136,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.dark.text,
   },
-  infoContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-    backgroundColor: Colors.dark.background,
-  },
   infoText: {
     fontSize: 20,
     padding: 8,
@@ -129,8 +143,13 @@ const styles = StyleSheet.create({
     color: Colors.dark.text,
   },
   logo: {
-    width: 400,
-    height: 400,
+    width: 900,
+    height: 300,
+    marginBottom: 20,
+  },
+  logoImage: {
+    width: 350,
+    height: 100,
   },
   button: {
     width: dWidth * .5,
@@ -139,6 +158,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
-    margin: 20,
+    margin: 10,
   },
 });

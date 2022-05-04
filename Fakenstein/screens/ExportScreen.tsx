@@ -6,6 +6,7 @@ import {ImageType} from "../constants/utils";
 import * as MediaLibrary from 'expo-media-library';
 import BottomToolBox from "../components/BottomToolBox";
 import MessagePopup from "../components/MessagePopup";
+import * as FileSystem from 'expo-file-system';
 
 type Props = {
   route: Route;
@@ -19,11 +20,22 @@ export default function ExportScreen({route}: Props) {
     console.log("Export");
   }, []);
 
+  const decode = (str: string):string => Buffer.from(str, 'base64').toString('binary');
+
+
   const download = async () => {
     // direct to welcome page after informing the user
-    await MediaLibrary.saveToLibraryAsync(image.uri)
+    const base64Code = image.uri.split("data:image/png;base64,")[1];
+
+    const filename = FileSystem.documentDirectory + "some_unique_file_name.png";
+    await FileSystem.writeAsStringAsync(filename, base64Code, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    await MediaLibrary.saveToLibraryAsync(filename)
       .then((res) => setVisible(true))
       .catch((err) => console.log(err.message));
+
   }
 
   return  (

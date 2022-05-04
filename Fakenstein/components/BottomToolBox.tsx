@@ -1,5 +1,5 @@
 import {Text, View} from "./Themed";
-import {Pressable, StyleSheet, TouchableOpacity} from "react-native";
+import {StyleSheet, TouchableOpacity} from "react-native";
 import React from "react";
 import {Colors} from "../constants/Colors";
 
