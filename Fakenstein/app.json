@@ -47,6 +47,14 @@
           "photosPermission": "Fakenstein accesses your photos to let you share them with your friends.",
           "savePhotosPermission": "Allow Fakenstein to save photos to your phone."
         }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Fakenstein to access your photos.",
+          "savePhotosPermission": "Allow Fakenstein to save photos.",
+          "isAccessMediaLocationEnabled": "true"
+        }
       ]
     ]
   }

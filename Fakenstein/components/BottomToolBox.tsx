@@ -10,6 +10,7 @@ type Props = {
   nextT: string;
 }
 export default function BottomToolBox({undoF,undoT,nextF, nextT}: Props) {
+
   return (
     <View style={styles.toolboxContainer}>
       <View style={styles.toolboxBar}>

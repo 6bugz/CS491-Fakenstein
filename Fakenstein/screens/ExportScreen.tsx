@@ -15,6 +15,7 @@ type Props = {
 export default function ExportScreen({route}: Props) {
   const image: ImageType = (route.params.image);
   const [visible, setVisible] = React.useState(false);
+  const [status, requestPermission] = MediaLibrary.usePermissions();
 
   useEffect(() => {
     console.log("Export");
@@ -22,6 +23,9 @@ export default function ExportScreen({route}: Props) {
 
 
   const download = async () => {
+    console.log("DOWNLOAD");
+    if(status !== 'granted')
+      await requestPermission();
     // direct to welcome page after informing the user
     const base64Code = image.uri.split("data:image/png;base64,")[1];
 

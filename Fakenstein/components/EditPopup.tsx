@@ -1,5 +1,5 @@
 import React from "react";
-import {Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {Modal, Platform, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {dHeight, dWidth} from "../constants/utils";
 import {Text} from "./Themed";
 
@@ -116,6 +116,11 @@ export default class EditPopup extends React.Component {
                   <Text style={styles.touchText}>{skinColor ? "Dark" : "Pale"} </Text>
                 </TouchableOpacity>
               </View>
+
+              <TouchableOpacity style={styles.luckyButton} onPress={() => null}>
+                <Text style={styles.buttonText}>I FEEL LUCKY</Text>
+              </TouchableOpacity>
+
               <View style={styles.rowView}>
                 <TouchableOpacity style={styles.button} onPress={this.blur}>
                   <Text style={styles.buttonText}>BLUR</Text>
@@ -183,6 +188,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     marginHorizontal: 10,
+    marginTop: 15,
+  },
+  luckyButton: {
+    width: "90%",
+    backgroundColor:'#F92660',
+    borderRadius: 20,
+    alignItems: "center",
     marginTop: 15,
   },
   buttonText: {
