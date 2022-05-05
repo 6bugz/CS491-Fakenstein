@@ -92,7 +92,7 @@ export default class EditWeb extends React.Component {
 
     render() {
         // this.props.blendFace
-        const {show, age, gender, skinColor, suggestions} = this.state;
+        const {show, age, gender, skinColor} = this.state;
         const {onTouchOutside} = this.props;
 
         return (
@@ -125,18 +125,22 @@ export default class EditWeb extends React.Component {
                                 </TouchableOpacity>
                             </View>
 
-                            <Text style={styles.title}>Suggested Generated Faces</Text>
-                            <View style={styles.rowView}>
-                                <TouchableOpacity style={styles.faceImage} onPress={() => this.selectFace(0)}>
-                                    <Image source={suggestions[0]}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.faceImage} onPress={() => this.selectFace(1)}>
-                                    <Image source={suggestions[1]}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.faceImage} onPress={() => this.selectFace(2)}>
-                                    <Image source={suggestions[2]}/>
-                                </TouchableOpacity>
-                            </View>
+                            {(!!this.state.suggestions) && (
+                                <View>
+                                    <Text style={styles.title}>Suggested Generated Faces</Text>
+                                    <View style={styles.rowView}>
+                                        <TouchableOpacity style={styles.faceImage} onPress={() => this.selectFace(0)}>
+                                        <Image source={this.state.suggestions[0]}/>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.faceImage} onPress={() => this.selectFace(1)}>
+                                        <Image source={this.state.suggestions[1]}/>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.faceImage} onPress={() => this.selectFace(2)}>
+                                        <Image source={this.state.suggestions[2]}/>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                )}
 
                             <View style={styles.rowView}>
                                 <TouchableOpacity style={styles.button} onPress={this.blur}>

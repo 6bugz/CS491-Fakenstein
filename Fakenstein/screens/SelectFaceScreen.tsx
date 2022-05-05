@@ -43,17 +43,12 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     const faces = serverBoxes.map((face, index) =>
       (face.isBackground ? {[index]: face} : null)
     );
-    if( Platform.OS === 'web') {
-      const base64 = image.uri.split(",")[1];
-      data.append("image",{base64})
-    } else {
-      // @ts-ignore
-      data.append("image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
-    }
+    // @ts-ignore
+    data.append("image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'});
     data.append("faces", JSON.stringify(faces));
     console.log(data)
 
-    await fetch(backendURL + ( Platform.OS === 'web') ? '/replace_web' : '/replace', {
+    await fetch(backendURL + '/replace', {
       method: 'POST',
       headers: { "Content-Type": "multipart/form-data" },
       body: data,
@@ -83,6 +78,51 @@ export default function SelectFaceScreen({route, navigation}: Props) {
           boxes: modifyBoxes,
         });
       }).catch((error) => {
+          console.log(error.message);
+          setVisible(true);
+        });
+    setLoading(false);
+  }
+
+  const goToWebModify = async () => {
+    setLoading(true);
+
+    const faces = serverBoxes.map((face, index) =>
+        (face.isBackground ? {[index]: face} : null)
+    );
+    const base64 = image.uri.split(",")[1];
+    const data = {"image": base64, "faces": JSON.stringify(faces)};
+
+    await fetch(backendURL + '/replace_web', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).then((response) => response.json())
+        .then( (responseJson) => {
+          const responseFaces = responseJson["faces"];
+          console.log(responseFaces);
+          const modifyBoxes: BoundaryBox[] = [];
+          let indx = 0;
+          console.log(dWidth + ", " + imageHeight);
+          console.log(image.width + ", " + image.height );
+          for (let box in responseFaces) {
+            if( responseFaces[box] ) {
+              let obj = responseFaces[box];
+              if(!obj[indx + ""].invalid){
+                modifyBoxes.push( obj[indx + ""]);
+              }
+            }
+            indx += 1;
+          }
+          console.log(modifyBoxes);
+          const blendedImage = JSON.parse(JSON.stringify(image));;
+          blendedImage.uri = "data:image/png;base64," + responseJson["image"];
+          setLoading(false);
+          navigation.push('Modify', {
+            image: blendedImage,
+            boxes: modifyBoxes,
+          });
+        }).catch((error) => {
           console.log(error.message);
           setVisible(true);
         });
@@ -120,7 +160,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
                     success={false}
                     message={"We are having problems identifying a person in the selected boxes. " +
                         "Please remove boxes that do not contain a human face."} />
-      <BottomToolBox undoF={null} undoT={""} nextF={(Platform.OS === 'web') ? handleFakeNavigation : goToModify} nextT={"Replace"}/>
+      <BottomToolBox undoF={null} undoT={""} nextF={(Platform.OS === 'web') ? goToWebModify : goToModify} nextT={"Replace"}/>
     </View>)
   );
 }

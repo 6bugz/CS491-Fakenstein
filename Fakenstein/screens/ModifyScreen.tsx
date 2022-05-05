@@ -44,13 +44,12 @@ export default function ModifyScreen({route, navigation}: Props) {
     setIndex(ind);
     console.log("MODIFY SHOW");
     if (Platform.OS === 'web'){
-      const data = new FormData();
-      data.append("faces", JSON.stringify(maximizeBox(imageHeight, image, boxes[ind])));
+      const data = {"faces": JSON.stringify(boxes[ind])};
 
       await fetch(backendURL + '/suggested_faces' , {
         method: 'POST',
-        headers: { "Content-Type": "multipart/form-data" },
-        body: data,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       }).then((response) => response.json())
           .then( (responseJson) => {
             if (responseJson["message"] === "successful") {
