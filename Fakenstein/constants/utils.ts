@@ -13,7 +13,8 @@ export type ImageType = {
 }
 
 // need to give IP for Android testing: 176.88.100.24
-export const backendURL = "http://172.20.10.4:5000";
+//bilkent wifi "http://139.179.103.16:5000"
+export const backendURL = "http://139.179.103.16:5000";
 
 export const dWidth = Dimensions.get('window').width;
 export const dHeight = Dimensions.get('window').height;
@@ -26,6 +27,28 @@ export const resizeBoxes = (imHeight: number, image: ImageType, boxes : Boundary
   }
   console.log(faceBoxes);
   return faceBoxes;
+}
+
+export const noResizeBoxes = (imHeight: number, image: ImageType, boxes : BoundaryBox[]) => {
+  let faceBoxes: BoundaryBox[] = [];
+  for (let box of boxes) {
+    const boundary = noResizeBox( imHeight, image, box);
+    faceBoxes.push(boundary);
+  }
+  return faceBoxes;
+}
+
+export const noResizeBox = (imHeight: number, image: ImageType, box : BoundaryBox) => {
+  return {
+    isBackground: box.isBackground,
+    height: box.height,
+    width: box.width,
+    top: box.top,
+    left: box.left, //+ ((dWidth - image.width) / 2),
+    age: box.age,
+    gender: box.gender,
+    skinColor: box.skinColor,
+  };
 }
 
 export const resizeBox = (imHeight: number, image: ImageType, box : BoundaryBox) => {

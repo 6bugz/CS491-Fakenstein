@@ -18,7 +18,8 @@ export default class EditWeb extends React.Component {
     }
 
     show = (box, suggestions) => {
-        console.log(box)
+        console.log(box);
+        console.log(suggestions);
         this.setState({
             show: true,
             age: box.age,
@@ -88,6 +89,7 @@ export default class EditWeb extends React.Component {
 
     selectFace(index) {
         this.props.blendFace(this.state.suggestions[index], this.state.box);
+        console.log("selectface");
     }
 
     render() {
@@ -130,13 +132,13 @@ export default class EditWeb extends React.Component {
                                     <Text style={styles.title}>Suggested Generated Faces</Text>
                                     <View style={styles.rowView}>
                                         <TouchableOpacity style={styles.faceImage} onPress={() => this.selectFace(0)}>
-                                        <Image source={this.state.suggestions[0]}/>
+                                        <Image source={{uri: this.state.suggestions[0]}} style={{flex: 1}} />
                                         </TouchableOpacity>
                                         <TouchableOpacity style={styles.faceImage} onPress={() => this.selectFace(1)}>
-                                        <Image source={this.state.suggestions[1]}/>
+                                        <Image source={{uri: this.state.suggestions[1]}} style={{flex: 1}}/>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={styles.faceImage} onPress={() => this.selectFace(2)}>
-                                        <Image source={this.state.suggestions[2]}/>
+                                        <Image source={{uri: this.state.suggestions[2]}} style={{flex: 1}}/>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
     },
     faceImage: {
         margin: 10,
-        width: 40,
-        height: 40,
+        width: 80,
+        height: 80,
     },
 });
