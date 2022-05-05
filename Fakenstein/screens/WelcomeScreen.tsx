@@ -48,6 +48,37 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
     setLoading(false);
   }
 
+  const toWebServer = async (image: ImageInfo) => {
+
+    const base64 = image.uri.split(",")[1];
+    const data = {"image": base64};
+
+    await fetch(backendURL + '/detect_web' , {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).then((response) => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+          if(responseJson["message"] == 'successful') {
+            setLoading(false);
+            navigation.push('SelectFace', {
+              image: image,
+              boxes: responseJson['boxes'],
+            });
+          }
+          else {
+            setVisible(true);
+            setMessage('We could not find any face in this picture.');
+          }
+        }).catch((error) => {
+          console.log(error.message);
+          setVisible(true);
+          setMessage('We are having problems connecting to our server. Please try again later.');
+        });
+    setLoading(false);
+  }
+
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     // Result object is: {cancelled:, height:, type:, uri:, width: }
@@ -62,20 +93,8 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
     if (response.cancelled) {
       console.log('User cancelled image picker');
     } else {
-      if (Platform.OS === 'web') {
-        console.log(response);
-        navigation.push('SelectFace', {
-          image: response,
-          boxes: [{"age": false,"gender": false,"height": 222,"invalid": false,
-            "isBackground": true,"left": 268,"skinColor": false,"top": 209,"width": 152,
-          }, {"age": false,"gender": false,"height": 222,"invalid": false,"isBackground": true,
-            "left": 478,"skinColor": false,"top": 209,"width": 152,
-          }],
-        });
-      } else {
-        setLoading(true);
-        await toServer(response);
-      }
+      setLoading(true);
+      await (Platform.OS === 'web') ? toWebServer(response) : toServer(response);
     }
   };
 
@@ -161,3 +180,12 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
+
+/*navigation.push('SelectFace', {
+          image: response,
+          boxes: [{"age": false,"gender": false,"height": 222,"invalid": false,
+            "isBackground": true,"left": 268,"skinColor": false,"top": 209,"width": 152,
+          }, {"age": false,"gender": false,"height": 222,"invalid": false,"isBackground": true,
+            "left": 478,"skinColor": false,"top": 209,"width": 152,
+          }],
+        });*/

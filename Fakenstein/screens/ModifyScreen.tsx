@@ -8,6 +8,7 @@ import {BoundaryBox} from "../constants/Face";
 import PopupBox from "../components/PopupBox";
 import EditPopup from "../components/EditPopup";
 import LoadingScreen from "./LoadingScreen";
+import EditWeb from "../components/EditWeb";
 
 type Props = {
   route: Route;
@@ -39,10 +40,30 @@ export default function ModifyScreen({route, navigation}: Props) {
     });
   }
 
-  const showPopup = (ind) => {
+  const showPopup = async (ind) => {
     setIndex(ind);
     console.log("MODIFY SHOW");
-    popupRef.show(boxes[ind]);
+    if (Platform.OS === 'web'){
+      const data = new FormData();
+      data.append("faces", JSON.stringify(maximizeBox(imageHeight, image, boxes[ind])));
+
+      await fetch(backendURL + '/suggested_faces' , {
+        method: 'POST',
+        headers: { "Content-Type": "multipart/form-data" },
+        body: data,
+      }).then((response) => response.json())
+          .then( (responseJson) => {
+            if (responseJson["message"] === "successful") {
+              let suggestions = [];
+              suggestions.push("data:image/png;base64," + responseJson["face1"]);
+              suggestions.push("data:image/png;base64," + responseJson["face2"]);
+              suggestions.push("data:image/png;base64," + responseJson["face3"]);
+              popupRef.show(boxes[ind], suggestions);
+            }
+          }).catch((error) => console.log(error.message));
+    } else {
+      popupRef.show(boxes[ind]);
+    }
   }
 
   const undo = () => {
@@ -91,6 +112,35 @@ export default function ModifyScreen({route, navigation}: Props) {
     setLoading(false);
   }
 
+  const blend = async (imageB64, box) => {
+    popupRef.close();
+    setLoading(true);
+
+    const data = new FormData();
+    // @ts-ignore
+    data.append("src_image", image.uri.slice(22));
+    data.append("selected_image", imageB64.slice(22));
+    data.append("box", JSON.stringify(maximizeBox(imageHeight, image, box)));
+
+    await fetch(backendURL + '/selected_swap' , {
+      method: 'POST',
+      headers: { "Content-Type": "multipart/form-data" },
+      body: data,
+    }).then((response) => response.json())
+        .then( (responseJson) => {
+          if (responseJson["message"] === "successful") {
+            const blendedImage = JSON.parse(JSON.stringify(image));
+            blendedImage.uri = "data:image/png;base64," + responseJson["image"];
+            setImage(blendedImage);
+            setImageStack([... imageStack, blendedImage]);
+            const newBoxes = JSON.parse(JSON.stringify(boxes));
+            setBoxStack([... boxStack, newBoxes]);
+            setBoxes(newBoxes);
+          }
+        }).catch((error) => console.log(error.message));
+    setLoading(false);
+  }
+
 
   return  loading ? <LoadingScreen/> : (
     !!image && (
@@ -102,8 +152,11 @@ export default function ModifyScreen({route, navigation}: Props) {
           ))}
         </View>
         <BottomToolBox undoF={undo} undoT={"Undo"} nextF={handlePushToExport} nextT={"Done"}/>
-        <EditPopup ref={(target) => popupRef = target}
-                   onTouchOutside={closePopup} update={update}/>
+        {(Platform.OS === 'android') && <EditPopup ref={(target) => popupRef = target}
+                    onTouchOutside={closePopup} update={update}/>}
+        {(Platform.OS === 'web') &&
+            <EditWeb ref={(target) => popupRef = target}
+                       onTouchOutside={closePopup} update={update} blendFace={blend}/>}
       </View>
     )
   );

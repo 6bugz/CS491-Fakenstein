@@ -20,8 +20,6 @@ export default function ExportScreen({route}: Props) {
     console.log("Export");
   }, []);
 
-  const decode = (str: string):string => Buffer.from(str, 'base64').toString('binary');
-
 
   const download = async () => {
     // direct to welcome page after informing the user

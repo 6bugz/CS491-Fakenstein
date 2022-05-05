@@ -43,12 +43,17 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     const faces = serverBoxes.map((face, index) =>
       (face.isBackground ? {[index]: face} : null)
     );
-    // @ts-ignore
-    data.append("image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
+    if( Platform.OS === 'web') {
+      const base64 = image.uri.split(",")[1];
+      data.append("image",{base64})
+    } else {
+      // @ts-ignore
+      data.append("image",{uri: image.uri, name: 'image.jpg', type: 'image/jpeg'})
+    }
     data.append("faces", JSON.stringify(faces));
     console.log(data)
 
-    await fetch(backendURL + '/replace', {
+    await fetch(backendURL + ( Platform.OS === 'web') ? '/replace_web' : '/replace', {
       method: 'POST',
       headers: { "Content-Type": "multipart/form-data" },
       body: data,
