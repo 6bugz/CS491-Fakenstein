@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Image,  Route, StyleSheet} from 'react-native';
+import {Dimensions, Image, Platform, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { View } from '../components/Themed';
 import {ImageType} from "../constants/utils";
@@ -7,6 +7,7 @@ import * as MediaLibrary from 'expo-media-library';
 import BottomToolBox from "../components/BottomToolBox";
 import MessagePopup from "../components/MessagePopup";
 import * as FileSystem from 'expo-file-system';
+import RNFS from 'react-native-fs';
 
 type Props = {
   route: Route;
@@ -23,16 +24,34 @@ export default function ExportScreen({route}: Props) {
 
   const download = async () => {
     // direct to welcome page after informing the user
-    const base64Code = image.uri.split("data:image/png;base64,")[1];
+    const base64Code = image.uri.split(",")[1];
 
-    const filename = FileSystem.documentDirectory + "some_unique_file_name.png";
-    await FileSystem.writeAsStringAsync(filename, base64Code, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
+    if (Platform.OS === 'web'){
+      var path = RNFS.DocumentDirectoryPath + '/test.png';
+      RNFS.writeFile(path, base64Code, 'base64')
+          .then((success) => {
+            console.log('FILE WRITTEN!');
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
 
-    await MediaLibrary.saveToLibraryAsync(filename)
-      .then((res) => setVisible(true))
-      .catch((err) => console.log(err.message));
+      RNFS.downloadFile({
+        fromUrl: path,
+        toFile: `${RNFS.DocumentDirectoryPath}/react-native.png`,
+      }).promise.then((r) => {
+        console.log('FILE DOWNLOADED');
+      });
+    }
+    else {
+      const filename = FileSystem.documentDirectory + "some_unique_file_name.png";
+      await FileSystem.writeAsStringAsync(filename, base64Code, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      await MediaLibrary.saveToLibraryAsync(filename)
+          .then((res) => setVisible(true))
+          .catch((err) => console.log(err.message));
+    }
 
   }
 
