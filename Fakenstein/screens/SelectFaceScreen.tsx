@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Image, Platform, Route, StyleSheet} from 'react-native';
+import {Image, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import {View} from '../components/Themed';
 import FaceBox from '../components/FaceBox';
 import {BoundaryBox} from "../constants/Face";
-import {backendURL, dWidth, ImageType, Navigation, resizeBox, resizeBoxes} from "../constants/utils";
+import {backendURL, dWidth, ImageType, isWeb, Navigation, resizeBox, resizeBoxes} from "../constants/utils";
 import BottomToolBox from "../components/BottomToolBox";
 import LoadingScreen from "./LoadingScreen";
 import MessagePopup from "../components/MessagePopup";
@@ -27,13 +27,16 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     useEffect(() => {
         console.log(dWidth + ", " + imageHeight);
         console.log(image.width + ", " + image.height);
-        if (Platform.OS === 'web') {
+        if (isWeb) {
             setBoxes( serverBoxes);
         } else {
             setBoxes(resizeBoxes(imageHeight, image, serverBoxes));
         }
     }, []);
 
+  useEffect(() => {
+    navigation.setOptions({ headerShown: !loading })
+  }, [loading]);
 
     const setBackground = (index: number, val: boolean) => {
         boxes[index].isBackground = val;
@@ -153,12 +156,10 @@ export default function SelectFaceScreen({route, navigation}: Props) {
     return loading ? <LoadingScreen/> : (!!image && (
             <View style={styles.container}>
                 <View style={[styles.container, styles.imageContainer]}>
-                    <Image source={{uri: image.uri}}
-                           style={(Platform.OS === 'web') ? [styles.webImage, {width: image.width, height: image.height}]
-                               : styles.image}/>
-                    <View style={(Platform.OS === 'web') ? {position: 'absolute', backgroundColor: 'transparent',
-                        width: image.width, height: image.height}
-                        : [styles.boxContainer, {height: imageHeight}]}>
+                    <Image source={{uri: image.uri}} style={isWeb ? [styles.webImage, {width: image.width, height: image.height}]
+                        : styles.image}/>
+                    <View style={[styles.boxContainer, isWeb ? {width: image.width, height: image.height}
+                        : {width: dWidth, height: imageHeight}]}>
                         {(boxes.length > 0) && boxes.map((face, index) => (
                             <FaceBox key={index} inx={index} face={face} handler={setBackground}/>
                         ))}
@@ -168,7 +169,7 @@ export default function SelectFaceScreen({route, navigation}: Props) {
                               success={false}
                               message={"We are having problems identifying a person in the selected boxes. " +
                                   "Please remove boxes that do not contain a human face."}/>
-                <BottomToolBox undoF={null} undoT={""} nextF={(Platform.OS === 'web') ? goToWebModify : goToModify}
+                <BottomToolBox undoF={null} undoT={""} nextF={isWeb ? goToWebModify : goToModify}
                                nextT={"Replace"}/>
             </View>)
     );
@@ -197,6 +198,5 @@ const styles = StyleSheet.create({
     boxContainer: {
         position: 'absolute',
         backgroundColor: 'transparent',
-        width: dWidth,
     },
 });

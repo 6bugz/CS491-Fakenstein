@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Dimensions, Image,  Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import { View } from '../components/Themed';
-import {ImageType} from "../constants/utils";
+import {dWidth, ImageType, isWeb} from "../constants/utils";
 import * as MediaLibrary from 'expo-media-library';
 import BottomToolBox from "../components/BottomToolBox";
 import MessagePopup from "../components/MessagePopup";
@@ -22,7 +22,7 @@ export default function ExportScreen({route}: Props) {
   }, []);
 
 
-  const download = async () => {
+  const downloadAndroid = async () => {
     console.log("DOWNLOAD");
     if(status !== 'granted')
       await requestPermission();
@@ -37,7 +37,10 @@ export default function ExportScreen({route}: Props) {
     await MediaLibrary.saveToLibraryAsync(filename)
       .then((res) => setVisible(true))
       .catch((err) => console.log(err.message));
+  }
 
+  const downloadWeb = async () => {
+    console.log("DOWNLOAD");
   }
 
   return  (
@@ -47,7 +50,7 @@ export default function ExportScreen({route}: Props) {
                       success={true}
                       message={"Image saved to gallery."} />
         <Image source={{uri: image.uri}} style={styles.image}/>
-        <BottomToolBox undoF={null} undoT={""} nextF={download} nextT={"Download Image"}/>
+        <BottomToolBox undoF={null} undoT={""} nextF={isWeb ? downloadWeb : downloadAndroid} nextT={"Download Image"}/>
       </View>
     )
   );
@@ -64,7 +67,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    width: Dimensions.get('window').width,
+    width: dWidth,
     height: undefined,
     resizeMode: 'contain',
   },

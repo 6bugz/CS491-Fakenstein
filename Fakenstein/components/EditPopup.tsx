@@ -96,9 +96,11 @@ export default class EditPopup extends React.Component {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.luckyButton} onPress={this.lucky}>
-                <Text style={styles.buttonText}>I FEEL LUCKY</Text>
-              </TouchableOpacity>
+              <View style={styles.rowView}>
+                <TouchableOpacity style={styles.luckyButton} onPress={this.lucky}>
+                  <Text style={styles.buttonText}>I FEEL LUCKY</Text>
+                </TouchableOpacity>
+              </View>
 
               <View style={styles.rowView}>
                 <TouchableOpacity style={styles.button} onPress={this.blur}>
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   rowView: {
-    alignItems: "stretch",
+    alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -175,6 +177,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     marginTop: 15,
+    marginHorizontal: 20,
   },
   buttonText: {
     color: "white",

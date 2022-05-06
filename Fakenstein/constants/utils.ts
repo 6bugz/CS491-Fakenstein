@@ -1,6 +1,6 @@
 import {Props} from "react";
 import {BoundaryBox} from "./Face";
-import {Dimensions} from "react-native";
+import {Dimensions, Platform} from "react-native";
 
 export type Navigation = Props<any>['navigation'];
 
@@ -14,10 +14,12 @@ export type ImageType = {
 
 // need to give IP for Android testing:
 // bilkent wifi "http://139.179.103.16:5000"
-export const backendURL = "http://139.179.103.16:5000";
+export const backendURL = "http://139.179.205.169:5000";
 
 export const dWidth = Dimensions.get('window').width;
 export const dHeight = Dimensions.get('window').height;
+
+export const isWeb = Platform.OS === 'web';
 
 export const resizeBoxes = (imHeight: number, image: ImageType, boxes : BoundaryBox[]) => {
   let faceBoxes: BoundaryBox[] = [];

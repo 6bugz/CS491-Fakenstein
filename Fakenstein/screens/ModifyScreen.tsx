@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Image, Platform, Route, StyleSheet} from 'react-native';
+import {Image, Route, StyleSheet} from 'react-native';
 import {Colors} from '../constants/Colors';
 import {View} from '../components/Themed';
-import {backendURL, dWidth, ImageType, maximizeBox, Navigation} from "../constants/utils";
+import {backendURL, dWidth, ImageType, isWeb, maximizeBox, Navigation} from "../constants/utils";
 import BottomToolBox from "../components/BottomToolBox";
 import {BoundaryBox} from "../constants/Face";
 import PopupBox from "../components/PopupBox";
@@ -34,6 +34,10 @@ export default function ModifyScreen({route, navigation}: Props) {
         console.log(boxes);
     }, []);
 
+    useEffect(() => {
+        navigation.setOptions({ headerShown: !loading })
+    }, [loading]);
+
     const handlePushToExport = () => {
         navigation.push('Export', {
             image: image
@@ -43,7 +47,8 @@ export default function ModifyScreen({route, navigation}: Props) {
     const showPopup = async (ind) => {
         setIndex(ind);
         console.log("MODIFY SHOW");
-        if (Platform.OS === 'web') {
+        if (isWeb) {
+            setLoading(true);
             const data = {"faces": JSON.stringify(boxes[ind])};
 
             await fetch(backendURL + '/suggested_faces', {
@@ -56,9 +61,11 @@ export default function ModifyScreen({route, navigation}: Props) {
                     suggestions.push("data:image/jpeg;base64," + responseJson["face1"]);
                     suggestions.push("data:image/jpeg;base64," + responseJson["face2"]);
                     suggestions.push("data:image/png;base64," + responseJson["face3"]);
+                    setLoading(false);
                     popupRef.show(boxes[ind], suggestions);
 
                 }).catch((error) => console.log(error.message));
+            setLoading(false);
         } else {
             popupRef.show(boxes[ind]);
         }
@@ -67,13 +74,22 @@ export default function ModifyScreen({route, navigation}: Props) {
     const undo = () => {
         console.log("UNDO ");
         if (boxStack.length > 1) {
-            if (Platform.OS === 'android') {
-                imageStack.pop();
-                setImage(imageStack[imageStack.length - 1]);
-            }
+            imageStack.pop();
+            setImage(imageStack[imageStack.length - 1]);
             boxStack.pop();
             setBoxes(boxStack[boxStack.length - 1]);
         }
+    }
+
+    const pushToStack = (responseJson, box) => {
+        const blendedImage = JSON.parse(JSON.stringify(image));
+        blendedImage.uri = "data:image/png;base64," + responseJson["image"];
+        setImage(blendedImage);
+        setImageStack([...imageStack, blendedImage]);
+        const newBoxes = JSON.parse(JSON.stringify(boxes));
+        newBoxes[index] = box;
+        setBoxStack([...boxStack, newBoxes]);
+        setBoxes(newBoxes);
     }
 
     const closePopup = () => {
@@ -82,10 +98,10 @@ export default function ModifyScreen({route, navigation}: Props) {
 
     const update = async (box: BoundaryBox, route: string) => {
         console.log(route + " request.");
-        if (route == 'blend')
+        if (route !== 'blur')
             setLoading(true);
 
-        if (Platform.OS === 'android') {
+        if (!isWeb) {
             const data = new FormData();
             // @ts-ignore
             data.append("image", image.uri.split(',')[1]);
@@ -97,14 +113,7 @@ export default function ModifyScreen({route, navigation}: Props) {
                 body: data,
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    const blendedImage = JSON.parse(JSON.stringify(image));
-                    blendedImage.uri = "data:image/png;base64," + responseJson["image"];
-                    setImage(blendedImage);
-                    setImageStack([...imageStack, blendedImage]);
-                    const newBoxes = JSON.parse(JSON.stringify(boxes));
-                    newBoxes[index] = box;
-                    setBoxStack([...boxStack, newBoxes]);
-                    setBoxes(newBoxes);
+                    pushToStack(responseJson, box);
                 }).catch((error) => console.log(error.message));
         }
         else {
@@ -116,10 +125,7 @@ export default function ModifyScreen({route, navigation}: Props) {
                 body: JSON.stringify(data),
             }).then((response) => response.json())
                 .then((responseJson) => {
-                    const blendedImage = JSON.parse(JSON.stringify(image));
-                    blendedImage.uri = "data:image/png;base64," + responseJson["image"];
-                    setImage(blendedImage);
-                    setImageStack([...imageStack, blendedImage]);
+                    pushToStack(responseJson, box);
                 }).catch((error) => console.log(error.message));
         }
         setLoading(false);
@@ -155,9 +161,9 @@ export default function ModifyScreen({route, navigation}: Props) {
         !!image && (
             <View style={styles.container}>
                 <Image source={{uri: image.uri}} style={
-                    (Platform.OS === 'web') ? [styles.webImage, {width: image.width, height: image.height}]
+                    isWeb ? [styles.webImage, {width: image.width, height: image.height}]
                     : styles.image}/>
-                <View style={(Platform.OS === 'web') ? {position: 'absolute', backgroundColor: 'transparent',
+                <View style={isWeb ? {position: 'absolute', backgroundColor: 'transparent',
                         width: image.width, height: image.height}
                     : [styles.boxContainer, {height: imageHeight}]}>
                     {(boxes.length > 0) && boxes.map((face, index) => (
@@ -165,10 +171,10 @@ export default function ModifyScreen({route, navigation}: Props) {
                     ))}
                 </View>
                 <BottomToolBox undoF={undo} undoT={"Undo"} nextF={handlePushToExport} nextT={"Done"}/>
-                {(Platform.OS === 'android') &&
+                {(!isWeb) &&
                     <EditPopup ref={(target) => popupRef = target}
                                onTouchOutside={closePopup} update={update}/>}
-                {(Platform.OS === 'web') &&
+                {(isWeb) &&
                     <EditWeb ref={(target) => popupRef = target}
                              onTouchOutside={closePopup} update={update} blendFace={blend}/>}
             </View>

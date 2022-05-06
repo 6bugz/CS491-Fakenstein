@@ -1,9 +1,9 @@
-import {StyleSheet, TouchableOpacity, Image, Platform} from 'react-native';
+import {StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React, {useState} from 'react';
 import { Text, View } from '../components/Themed';
 import { RootTabScreenProps } from '../types';
 import {Colors} from '../constants/Colors';
-import {backendURL, dWidth} from "../constants/utils";
+import {backendURL, dWidth, isWeb} from "../constants/utils";
 import * as ImagePicker from "expo-image-picker";
 import {ImageInfo} from "expo-image-picker";
 import LoadingScreen from "./LoadingScreen";
@@ -94,7 +94,7 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
       console.log('User cancelled image picker');
     } else {
       setLoading(true);
-      await (Platform.OS === 'web') ? toWebServer(response) : toServer(response);
+      isWeb ? await toWebServer(response) : await toServer(response);
     }
   };
 
@@ -112,8 +112,19 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
     if (response.cancelled) {
       console.log('User cancelled image picker');
     } else {
+      /*
       setLoading(true);
       await toServer(response);
+
+       */
+      navigation.push('SelectFace', {
+        image: response,
+        boxes: [{"age": false,"gender": false,"height": 222,"invalid": false,
+          "isBackground": true,"left": 268,"skinColor": false,"top": 209,"width": 152,
+        }, {"age": false,"gender": false,"height": 222,"invalid": false,"isBackground": true,
+          "left": 478,"skinColor": false,"top": 209,"width": 152,
+        }],
+      });
     }
   };
 
@@ -131,7 +142,7 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
           GALLERY
         </Text>
       </TouchableOpacity>
-      {(Platform.OS === 'android') &&
+      {(!isWeb) &&
         <TouchableOpacity onPress={openCamera} style={styles.button}>
           <FontAwesome5 name="camera" size={24} color={Colors.dark.text}/>
           <Text style={styles.infoText}>

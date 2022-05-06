@@ -2,6 +2,7 @@ import {Text, View} from "./Themed";
 import {StyleSheet, TouchableOpacity} from "react-native";
 import React from "react";
 import {Colors} from "../constants/Colors";
+import {dWidth, isWeb} from "../constants/utils";
 
 type Props = {
   undoF: any;
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "gray",
     opacity: 0.8,
-    width: "90%",
+    width: isWeb ? dWidth * .7 : dWidth * .9,
     justifyContent: "space-evenly",
     borderRadius: 40,
   },
