@@ -75,7 +75,6 @@ export default function SelectFaceScreen({route, navigation}: Props) {
                 }
                 console.log(modifyBoxes);
                 const blendedImage = JSON.parse(JSON.stringify(image));
-                ;
                 blendedImage.uri = "data:image/png;base64," + responseJson["image"];
                 setLoading(false);
                 navigation.push('Modify', {

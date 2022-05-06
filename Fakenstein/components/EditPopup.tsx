@@ -8,9 +8,6 @@ export default class EditPopup extends React.Component {
     super(props);
     this.state = {
       show: false,
-      age: false,
-      gender: false,
-      skinColor: false,
       box: null,
     }
   }
@@ -19,9 +16,6 @@ export default class EditPopup extends React.Component {
     console.log(box)
     this.setState({
       show: true,
-      age: box.age,
-      gender: box.gender,
-      skinColor: box.skinColor,
       box: box,
     });
   }
@@ -32,44 +26,29 @@ export default class EditPopup extends React.Component {
 
   blend = () => {
     this.setState({show: false});
-    // send to server: blend only?
-    const b = {
-      age: this.state.age,
-      gender: this.state.gender,
-      skinColor: this.state.skinColor,
-      height: this.state.box.height,
-      left: this.state.box.left,
-      top: this.state.box.top,
-      width: this.state.box.width,
-    }
-    this.props.update(b, "blend");
+    this.props.update(this.state.box, "blend");
   }
 
   blur = () => {
     this.setState({show: false});
-    // send to server: blur only?
-    const b = {
-      age: this.state.age,
-      gender: this.state.gender,
-      skinColor: this.state.skinColor,
-      height: this.state.box.height,
-      left: this.state.box.left,
-      top: this.state.box.top,
-      width: this.state.box.width,
-    }
-    this.props.update(b, "blur");
+    this.props.update(this.state.box, "blur");
+  }
+
+  lucky = () => {
+    this.setState({show: false});
+    this.props.update(this.state.box, "i_feel_lucky");
   }
 
   setAge = () => {
-    this.setState({age: !this.state.age});
+    this.setState({box: {...this.state.box, age: !this.state.box.age}})
   }
 
   setGender = () => {
-    this.setState({gender: !this.state.gender});
+    this.setState({box: {...this.state.box, gender: !this.state.box.gender}});
   }
 
   setSkinColor = () => {
-    this.setState({skinColor: !this.state.skinColor});
+    this.setState({box: {...this.state.box, skinColor: !this.state.box.skinColor}});
   }
 
   renderOutsideTouchable(onTouch) {
@@ -84,14 +63,14 @@ export default class EditPopup extends React.Component {
   }
 
   render() {
-    const {show, age, gender, skinColor} = this.state;
+    const {show, box} = this.state;
     const {onTouchOutside} = this.props;
 
     return (
       <Modal animationType={"fade"} transparent={true}
              visible={show}
              onRequestClose={this.close}>
-        <View style={styles.container}>
+        {(!!box) && <View style={styles.container}>
           {this.renderOutsideTouchable(onTouchOutside)}
           <View style={styles.popup}>
             <View style={{marginBottom: 30}}>
@@ -99,25 +78,25 @@ export default class EditPopup extends React.Component {
               <View style={styles.rowView}>
                 <Text style={styles.text}>Age Group:</Text>
                 <TouchableOpacity style={styles.info} onPress={this.setAge}>
-                  <Text style={styles.touchText}>{age ? "Young" : "Old"} </Text>
+                  <Text style={styles.touchText}>{box.age ? "Young" : "Old"} </Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.separator}/>
               <View style={styles.rowView}>
                 <Text style={styles.text}>Gender Group:</Text>
                 <TouchableOpacity style={styles.info} onPress={this.setGender}>
-                  <Text style={styles.touchText}>{gender ? "Male" : "Female"} </Text>
+                  <Text style={styles.touchText}>{box.gender ? "Male" : "Female"} </Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.separator}/>
               <View style={styles.rowView}>
                 <Text style={styles.text}>Skin Color Group:</Text>
                 <TouchableOpacity style={styles.info} onPress={this.setSkinColor}>
-                  <Text style={styles.touchText}>{skinColor ? "Dark" : "Pale"} </Text>
+                  <Text style={styles.touchText}>{box.skinColor ? "Dark" : "Pale"} </Text>
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.luckyButton} onPress={() => null}>
+              <TouchableOpacity style={styles.luckyButton} onPress={this.lucky}>
                 <Text style={styles.buttonText}>I FEEL LUCKY</Text>
               </TouchableOpacity>
 
@@ -131,7 +110,7 @@ export default class EditPopup extends React.Component {
               </View>
             </View>
           </View>
-        </View>
+        </View>}
       </Modal>
     );
   }

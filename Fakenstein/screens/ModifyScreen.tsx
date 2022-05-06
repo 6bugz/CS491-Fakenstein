@@ -85,14 +85,10 @@ export default function ModifyScreen({route, navigation}: Props) {
         if (route == 'blend')
             setLoading(true);
 
-        const newBoxes = JSON.parse(JSON.stringify(boxes));
-        newBoxes[index] = box;
-        setBoxStack([...boxStack, newBoxes]);
-        setBoxes(newBoxes);
         if (Platform.OS === 'android') {
             const data = new FormData();
             // @ts-ignore
-            data.append("image", image.uri.slice(22));
+            data.append("image", image.uri.split(',')[1]);
             data.append("faces", JSON.stringify(maximizeBox(imageHeight, image, box)));
 
             await fetch(backendURL + '/' + route, {
@@ -105,6 +101,10 @@ export default function ModifyScreen({route, navigation}: Props) {
                     blendedImage.uri = "data:image/png;base64," + responseJson["image"];
                     setImage(blendedImage);
                     setImageStack([...imageStack, blendedImage]);
+                    const newBoxes = JSON.parse(JSON.stringify(boxes));
+                    newBoxes[index] = box;
+                    setBoxStack([...boxStack, newBoxes]);
+                    setBoxes(newBoxes);
                 }).catch((error) => console.log(error.message));
         }
         setLoading(false);
@@ -150,8 +150,9 @@ export default function ModifyScreen({route, navigation}: Props) {
                     ))}
                 </View>
                 <BottomToolBox undoF={undo} undoT={"Undo"} nextF={handlePushToExport} nextT={"Done"}/>
-                {(Platform.OS === 'android') && <EditPopup ref={(target) => popupRef = target}
-                                                           onTouchOutside={closePopup} update={update}/>}
+                {(Platform.OS === 'android') &&
+                    <EditPopup ref={(target) => popupRef = target}
+                               onTouchOutside={closePopup} update={update}/>}
                 {(Platform.OS === 'web') &&
                     <EditWeb ref={(target) => popupRef = target}
                              onTouchOutside={closePopup} update={update} blendFace={blend}/>}
