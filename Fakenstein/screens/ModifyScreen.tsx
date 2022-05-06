@@ -107,6 +107,21 @@ export default function ModifyScreen({route, navigation}: Props) {
                     setImageStack([...imageStack, blendedImage]);
                 }).catch((error) => console.log(error.message));
         }
+        else {
+            const data = {"image": image.uri.slice(22), "faces": JSON.stringify(box)};
+
+            await fetch(backendURL + '/' + route, {
+                method: 'POST',
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data),
+            }).then((response) => response.json())
+                .then((responseJson) => {
+                    const blendedImage = JSON.parse(JSON.stringify(image));
+                    blendedImage.uri = "data:image/png;base64," + responseJson["image"];
+                    setImage(blendedImage);
+                    setImageStack([...imageStack, blendedImage]);
+                }).catch((error) => console.log(error.message));
+        }
         setLoading(false);
     }
 
