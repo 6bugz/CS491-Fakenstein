@@ -5,8 +5,7 @@ import {Colors} from "../constants/Colors";
 export default function LoadingScreen() {
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-      <Text style={styles.title}>Loading...</Text>
+      <Image style={styles.logo} source={require('../assets/gif/loading.gif')} />
     </View>
   );
 }
