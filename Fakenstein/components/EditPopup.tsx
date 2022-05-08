@@ -1,5 +1,5 @@
 import React from "react";
-import {Modal, Platform, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {dHeight, dWidth} from "../constants/utils";
 import {Text} from "./Themed";
 

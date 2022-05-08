@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import {BoundaryBox} from "../constants/Face";
-import {Text} from "./Themed";
 
 type Props = {
   inx: number;
@@ -38,7 +37,7 @@ export default function FaceBox({inx, face, handler}: Props) {
 const styles = StyleSheet.create({
   box: {
     position: 'absolute',
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 4,
     opacity: 0.3,
     borderColor: '#F92660',

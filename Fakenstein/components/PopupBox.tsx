@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {BoundaryBox} from "../constants/Face";
 import {Colors} from "../constants/Colors";
 
@@ -36,7 +36,7 @@ export default function PopupBox({inx, face, open}: Props) {
 const styles = StyleSheet.create({
   box: {
     position: "absolute",
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 4,
     opacity: 0.3,
   },

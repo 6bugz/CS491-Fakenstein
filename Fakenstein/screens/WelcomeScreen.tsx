@@ -112,19 +112,8 @@ export default function WelcomeScreen({ navigation }: RootTabScreenProps<'Fakens
     if (response.cancelled) {
       console.log('User cancelled image picker');
     } else {
-      /*
       setLoading(true);
       await toServer(response);
-
-       */
-      navigation.push('SelectFace', {
-        image: response,
-        boxes: [{"age": false,"gender": false,"height": 222,"invalid": false,
-          "isBackground": true,"left": 268,"skinColor": false,"top": 209,"width": 152,
-        }, {"age": false,"gender": false,"height": 222,"invalid": false,"isBackground": true,
-          "left": 478,"skinColor": false,"top": 209,"width": 152,
-        }],
-      });
     }
   };
 
@@ -192,11 +181,13 @@ const styles = StyleSheet.create({
   },
 });
 
-/*navigation.push('SelectFace', {
-          image: response,
-          boxes: [{"age": false,"gender": false,"height": 222,"invalid": false,
-            "isBackground": true,"left": 268,"skinColor": false,"top": 209,"width": 152,
-          }, {"age": false,"gender": false,"height": 222,"invalid": false,"isBackground": true,
-            "left": 478,"skinColor": false,"top": 209,"width": 152,
-          }],
-        });*/
+/*
+navigation.push('SelectFace', {
+        image: response,
+        boxes: [{"age": false,"gender": false,"height": 680,"invalid": false,
+          "isBackground": true,"left": 268,"skinColor": false,"top": 209,"width": 450,
+        }, {"age": false,"gender": false,"height": 600,"invalid": false,"isBackground": true,
+          "left": 478,"skinColor": false,"top": 600,"width": 450,
+        }],
+      });
+*/
