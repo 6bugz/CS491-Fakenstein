@@ -46,7 +46,7 @@ export default class EditWeb extends React.Component {
             top: this.state.box.top,
             width: this.state.box.width,
         }
-        this.props.update(b, "blend");
+        this.props.update(b, "blend_web");
     }
 
     blur = () => {
@@ -61,7 +61,7 @@ export default class EditWeb extends React.Component {
             top: this.state.box.top,
             width: this.state.box.width,
         }
-        this.props.update(b, "blur");
+        this.props.update(b, "blur_web");
     }
 
     setAge = () => {
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         paddingHorizontal: 10,
-        maxHeight: dHeight * 0.5,
+        maxHeight: dHeight * 0.7,
     },
     title: {
         color: '#182E44',
