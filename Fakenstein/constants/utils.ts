@@ -14,7 +14,7 @@ export type ImageType = {
 
 // need to give IP for Android testing:
 // bilkent wifi "http://139.179.103.16:5000"
-export const backendURL = "http://139.179.103.5:5000";
+export const backendURL = "http://172.20.10.2:5000";
 
 export const dWidth = Dimensions.get('window').width;
 export const dHeight = Dimensions.get('window').height;

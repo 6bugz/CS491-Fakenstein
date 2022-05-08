@@ -48,7 +48,7 @@ export default function ModifyScreen({route, navigation}: Props) {
         setIndex(ind);
         console.log("MODIFY SHOW");
         if (isWeb) {
-            setLoading(true);
+            //setLoading(true);
             const data = {"faces": JSON.stringify(boxes[ind])};
 
             await fetch(backendURL + '/suggested_faces', {
